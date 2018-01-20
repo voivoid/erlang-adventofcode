@@ -1,4 +1,4 @@
--module(problem3a).
+-module(problem3b).
 -export([solve/1]).
 
 incrementMap( Map, Coord ) ->
@@ -14,11 +14,11 @@ updateCoord( 62,  {X, Y} ) -> % >
 updateCoord( 118, {X, Y} ) -> % v
     {X, Y+1}.
 
-move( [], Map, _ ) ->
+move( [], Map, _, _ ) ->
     maps:size( Map );
-move( [Char|Input], Map, Coord ) -> % '^'
-    NewCoord = updateCoord( Char, Coord ),
-    move( Input, incrementMap( Map, NewCoord ), NewCoord  ).
+move( [Char|Input], Map, Coord1, Coord2 ) -> % '^'
+    NewCoord = updateCoord( Char, Coord1 ),
+    move( Input, incrementMap( Map, NewCoord ), Coord2, NewCoord ).
 
 solve(Input) ->
-    move(Input, #{{0,0} => 1}, {0, 0}).
+    move(Input, #{{0,0} => 2}, {0, 0}, {0, 0} ).
