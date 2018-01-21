@@ -1,9 +1,9 @@
 -module(problem1a).
 -export([solve/1]).
 
-parseTurn( [76 | Steps ] ) -> % 'L'
+parseTurn( [$L | Steps ] ) ->
     { left, list_to_integer( Steps ) };
-parseTurn( [82 | Steps ] ) -> % 'R'
+parseTurn( [$R | Steps ] ) ->
     { right, list_to_integer( Steps ) }.
 
 doTurn( left, north ) -> west;

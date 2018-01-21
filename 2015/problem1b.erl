@@ -3,9 +3,9 @@
 
 iter(-1, _, Counter) ->
     Counter;
-iter(Floor, [40|Input], Counter) -> % '('
+iter(Floor, [$(|Input], Counter) ->
     iter(Floor + 1, Input, Counter + 1);
-iter(Floor, [41|Input], Counter) -> % ')'
+iter(Floor, [$)|Input], Counter) ->
     iter(Floor - 1, Input, Counter + 1);
 iter(Floor, [_|Input], Counter) ->
     iter(Floor, Input, Counter).

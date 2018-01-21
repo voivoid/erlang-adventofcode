@@ -2,21 +2,20 @@
 -export([solve/1]).
 
 incrementMap( Map, Coord ) ->
-    Val = maps:get( Coord, Map, 0 ),
-    maps:put( Coord, Val + 1, Map ).
+    maps:update_with( Coord, fun(V) -> V + 1 end, 0, Map ).
 
-updateCoord( 94,  {X, Y} ) -> % ^
+updateCoord( $^,  {X, Y} ) ->
     {X, Y-1};
-updateCoord( 60,  {X, Y} ) -> % <
+updateCoord( $<,  {X, Y} ) ->
     {X-1, Y};
-updateCoord( 62,  {X, Y} ) -> % >
+updateCoord( $>,  {X, Y} ) ->
     {X+1, Y};
-updateCoord( 118, {X, Y} ) -> % v
+updateCoord( $v, {X, Y} ) ->
     {X, Y+1}.
 
 move( [], Map, _ ) ->
     maps:size( Map );
-move( [Char|Input], Map, Coord ) -> % '^'
+move( [Char|Input], Map, Coord ) ->
     NewCoord = updateCoord( Char, Coord ),
     move( Input, incrementMap( Map, NewCoord ), NewCoord  ).
 
