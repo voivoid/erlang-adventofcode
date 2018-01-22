@@ -2,8 +2,7 @@
 -export([solve/1]).
 
 incrementMap( Map, Coord ) ->
-    Val = maps:get( Coord, Map, 0 ),
-    maps:put( Coord, Val + 1, Map ).
+    maps:update_with( Coord, fun(V) -> V + 1 end, 0, Map ).
 
 updateCoord( $^,  {X, Y} ) ->
     {X, Y-1};
