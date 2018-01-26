@@ -1,5 +1,5 @@
 -module(problem7).
--export([solve1/1, solve2/1]).
+-export([solve1/1, solve2/1, findMismatch/1]).
 
 parseTower( Line ) ->
     [ Name, Weight ] = string:tokens( Line, " ()" ),
@@ -39,10 +39,16 @@ findTopParent( ChildToParentMap ) ->
     FirstTower = hd( maps:keys( ChildToParentMap ) ),
     findTopParent( ChildToParentMap, FirstTower ).
 
+findMismatch( [Y,Y,Y|T] ) -> findMismatch( [Y,Y|T] );
+findMismatch( [X,Y,Y|_] ) -> X;
+findMismatch( [Y,X,Y|_] ) -> X;
+findMismatch( [Y,Y,X|_] ) -> X.
+
 
 solve1( Input ) ->
     { _, ChildToParentMap } = makeTowerMaps ( Input ),
     findTopParent( ChildToParentMap ).
 
-solve2( _Input ) ->
+solve2( Input ) ->
+    { ParentToChildrenMap, ChildToParentMap } = makeTowerMaps ( Input ),
     0.
