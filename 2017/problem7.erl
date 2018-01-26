@@ -2,44 +2,37 @@
 -export([solve1/1, solve2/1]).
 
 parseTower( Line ) ->
-    [Name, Weight] = string:tokens( Line, " ()" ),
+    [ Name, Weight ] = string:tokens( Line, " ()" ),
     { Name, Weight }.
 
-parseTowerData( [ Tower ] ) ->
-    parseTowerData( [ Tower, "" ] );
-parseTowerData( [ Parent, ChildrenStr ] ) ->
+parseTowerChildren( [ Tower ] ) ->
+    parseTowerChildren( [ Tower, "" ] );
+parseTowerChildren( [ Parent, ChildrenStr ] ) ->
     { Name, Weight } = parseTower( Parent ),
     Children = string:tokens( ChildrenStr, " ," ),
     { Name, { Weight, Children } }.
 
 parseInputLine( Line ) ->
-    parseTowerData( string:tokens( Line, "->" ) ).
+    parseTowerChildren( string:tokens( Line, "->" ) ).
 
-makeParentToChildrenMap( Input ) ->
+makeTowerMaps( Input ) ->
     TowerStrs = string:tokens( Input, "\n" ),
-    Towers = lists:foldl( 
-                      fun ( Line, Acc ) ->
-                              { Tower, TowerData } = parseInputLine( Line ),
-                              Acc#{ Tower => TowerData } end,
-                      #{},
-                      TowerStrs ),
-    Towers.
-
-makeChildToParentMap( ParentToChildrenMap ) ->
-    maps:fold( fun ( Parent, { _, Children }, Acc ) ->
-                       lists:foldl( fun( Child, Acc ) ->
-                                            Acc#{ Child => Parent }
+    lists:foldl( 
+      fun ( Line, { PtWC, CtP } ) ->
+              { Parent, { Weight, Children } } = parseInputLine( Line ),
+              NewPtWC = PtWC#{ Parent => { Weight, Children } },
+              NewCtp = lists:foldl( fun( Child, ChildrenAcc ) -> ChildrenAcc#{ Child => Parent }
                                     end,
-                                    Acc,
-                                    Children )
-               end,
-               #{},         
-               ParentToChildrenMap ).
+                                    CtP,
+                                    Children ),
+              { NewPtWC , NewCtp } end,
+      { #{}, #{} },
+      TowerStrs ).
 
-findTopParent( ChildToParentMap, Tower ) ->
-    Parent = maps:get( Tower, ChildToParentMap, no_parent ),
-    if Parent == no_parent -> Tower;
-       Parent /= no_parent -> findTopParent( ChildToParentMap, Parent )
+findTopParent( ChildToParentMap, Parent ) ->
+    NextParent = maps:get( Parent, ChildToParentMap, no_parent ),
+    if NextParent == no_parent -> Parent;
+       NextParent /= no_parent -> findTopParent( ChildToParentMap, NextParent )
     end.
 
 findTopParent( ChildToParentMap ) ->
@@ -48,17 +41,26 @@ findTopParent( ChildToParentMap ) ->
 
 
 solve1( Input ) ->
-    ParentToChildrenMap = makeParentToChildrenMap ( Input ),
-    ChildToParentMap = makeChildToParentMap( ParentToChildrenMap ),
+    { _, ChildToParentMap } = makeTowerMaps ( Input ),
     findTopParent( ChildToParentMap ).
 
-findWeightMismatch( ParentToChildrenMap, Parent ) ->
-    Children = maps:get( ParentToChildrenMap, Parent ),
+makeWeightsMap( ParentToChildrenMap, Parent ) ->
+    case maps:get( Parent, ParentToChildrenMap ) of
+        { Weight, [] } -> #{Parent => { Weight, [] } };
+        { Weight, Children } -> { ChildrenWeights, WeightsMap } = lists:mapfoldl( fun( Child, WeightsMap ) ->
+                                                                                          
+                                                                                  end,
+                                                                                  #{},
+                                                                                  Children ),
+                                WeightsMap#{ Parent => { Weight, ChildrenWeights } }
+    end.
+
+findWeightMismatch( _WeightsMap, _Parent ) ->
     0.
     
 
-solve2(Input ) ->
-    ParentToChildrenMap = makeParentToChildrenMap ( Input ),
-    ChildToParentMap = makeChildToParentMap( ParentToChildrenMap ),
+solve2( Input ) ->
+    { ParentToChildrenMap, ChildToParentMap } = makeTowerMaps ( Input ),
     TopParent = findTopParent( ChildToParentMap ),
-    findWeightMismatch( ParentToChildrenMap, TopParent ) .
+    WeightsMap = makeWeightsMap( ParentToChildrenMap, TopParent ),
+    findWeightMismatch( WeightsMap, TopParent ).
