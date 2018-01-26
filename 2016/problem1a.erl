@@ -27,9 +27,9 @@ doInstruction( { Turn, Steps }, { X, Y, Face } ) ->
 
 solve(Input) ->
     Turns = string:tokens( Input, " ," ),
-    { _, { X, Y, _ } } = lists:mapfoldl( fun( Turn, CurrentCoord ) -> ParsedTurn = parseTurn( Turn ),
-                                                                      { ParsedTurn, doInstruction( ParsedTurn, CurrentCoord ) }
-                                                                      end,
-                                         { 0, 0, north },
-                                         Turns ),
+    { X, Y, _ } = lists:foldl( fun( Turn, CurrentCoord ) -> ParsedTurn = parseTurn( Turn ),
+                                                            doInstruction( ParsedTurn, CurrentCoord )
+                               end,
+                               { 0, 0, north },
+                               Turns ),
     abs( X ) + abs( Y ).

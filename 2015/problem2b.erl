@@ -11,7 +11,7 @@ calcRibbon(Input) ->
 
 solve(Input) ->
     Lines = string:tokens( Input, "\n" ),
-    { _, Sum } = lists:mapfoldl( fun(Line, Sum) -> R = calcRibbon( Line ), { R , R + Sum } end, 0, Lines ),
+    Sum = lists:foldl( fun(Line, Sum) -> R = calcRibbon( Line ), R + Sum end, 0, Lines ),
     Sum.
                             
     

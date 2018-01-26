@@ -11,7 +11,7 @@ calcArea(Input) ->
 
 solve(Input) ->
     Lines = string:tokens( Input, "\n" ),
-    { _, Sum } = lists:mapfoldl( fun(Line, Sum) -> R = calcArea( Line ), { R , R + Sum } end, 0, Lines ),
+    Sum = lists:foldl( fun(Line, Sum) -> R = calcArea( Line ), R + Sum end, 0, Lines ),
     Sum.
                             
     
