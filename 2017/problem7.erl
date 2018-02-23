@@ -1,19 +1,13 @@
 -module(problem7).
 -export([solve1/1, solve2/1]).
 
-parseTower( Line ) ->
-    [ Name, Weight ] = string:tokens( Line, " ()" ),
-    { Name, Weight }.
-
-parseTowerAndItsChildren( [ Tower ] ) ->
-    parseTowerAndItsChildren( [ Tower, "" ] );
-parseTowerAndItsChildren( [ Parent, ChildrenStr ] ) ->
-    { Name, Weight } = parseTower( Parent ),
-    Children = string:tokens( ChildrenStr, " ," ),
+parseTowerAndItsChildren( [ Name, Weight ] ) ->
+    { Name, { Weight, [] } };
+parseTowerAndItsChildren( [ Name, Weight | Children ] ) ->
     { Name, { Weight, Children } }.
 
 parseInputLine( Line ) ->
-    parseTowerAndItsChildren( string:tokens( Line, "->" ) ).
+    parseTowerAndItsChildren( string:tokens( Line, "()->, " ) ).
 
 makeTowerMaps( Input ) ->
     TowerStrs = string:tokens( Input, "\n" ),
