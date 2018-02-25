@@ -1,17 +1,16 @@
 -module(problem2016_01).
 -export([solve1/1, solve2/1]).
 
--type chars() :: $L | $R.
 -type turn() :: left | right.
 -type dir() :: north | west | south | east.
 -type coord() :: { integer(), integer() }.
 -type pos() :: { coord(), dir() }.
 -type instruction() :: { turn(), non_neg_integer() }.
 
--spec parse_turn( [ chars() ] ) -> { turn(), integer() }.
-parse_turn( [ $L | Steps ] ) ->
+-spec parse_instruction( [ char() ] ) -> instruction().
+parse_instruction( [ $L | Steps ] ) ->
     { left, list_to_integer( Steps ) };
-parse_turn( [ $R | Steps ] ) ->
+parse_instruction( [ $R | Steps ] ) ->
     { right, list_to_integer( Steps ) }.
 
 -spec do_turn( turn(), dir() ) -> dir().
@@ -38,12 +37,10 @@ do_instruction( { Turn, Steps }, { { X, Y }, Face } ) ->
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
-    Turns = string:tokens( Input, " ," ),
-    { { X, Y }, _ } = lists:foldl( fun( Turn, CurrentCoord ) -> ParsedTurn = parse_turn( Turn ),
-                                                                do_instruction( ParsedTurn, CurrentCoord )
-                                   end,
+    Instructions = string:tokens( Input, " ," ),
+    { { X, Y }, _ } = lists:foldl( fun( Instruction, CurrentPos ) -> do_instruction( parse_instruction( Instruction ), CurrentPos ) end,
                                    { { 0, 0 }, north },
-                                   Turns ),
+                                   Instructions ),
     abs( X ) + abs( Y ).
 
 

@@ -57,18 +57,18 @@ solve1( Input ) ->
 
 
 -spec find_mismatch( [ { integer(), integer() } ] ) -> integer() | none.
-find_mismatch( [ { _, Y },{ _, Y },{ _, Y } | T ] ) -> find_mismatch( [ Y, Y | T ] );
-find_mismatch( [ { E, X },{ _, Y },{ _, Y } | _ ] ) -> E - ( X - Y );
-find_mismatch( [ { _, Y },{ E, X },{ _, Y } | _ ] ) -> E - ( X - Y );
-find_mismatch( [ { _, Y },{ _, Y },{ E, X } | _ ] ) -> E - ( X - Y );
+find_mismatch( [ { _, Y }, { _, Y } = A, { _, Y } = B | T ] ) -> find_mismatch( [ A, B | T ] );
+find_mismatch( [ { E, X }, { _, Y },     { _, Y }     | _ ] ) -> E - ( X - Y );
+find_mismatch( [ { _, Y }, { E, X },     { _, Y }     | _ ] ) -> E - ( X - Y );
+find_mismatch( [ { _, Y }, { _, Y },     { E, X }     | _ ] ) -> E - ( X - Y );
 find_mismatch( _ ) -> none.
 
 -spec get_children( tower_name(), parent_to_children_map() ) -> [ tower_name() ].
-get_children(Parent, ParentToChildrenMap) ->
+get_children( Parent, ParentToChildrenMap ) ->
     maps:get( Parent, ParentToChildrenMap ).
 
 -spec get_weight( tower_name(), tower_to_weight_map() ) -> tower_weight().
-get_weight(Tower, Weights) ->
+get_weight( Tower, Weights ) ->
     maps:get( Tower, Weights ).
 
 -spec find_weight_mismatch( tower_name(), parent_to_children_map(), tower_to_weight_map() ) -> any().
