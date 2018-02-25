@@ -57,10 +57,10 @@ solve1( Input ) ->
 
 
 -spec find_mismatch( [ { integer(), integer() } ] ) -> integer() | none.
-find_mismatch( [{_,Y},{_,Y},{_,Y}|T] ) -> find_mismatch( [Y,Y|T] );
-find_mismatch( [{E,X},{_,Y},{_,Y}|_] ) -> E - ( X - Y );
-find_mismatch( [{_,Y},{E,X},{_,Y}|_] ) -> E - ( X - Y );
-find_mismatch( [{_,Y},{_,Y},{E,X}|_] ) -> E - ( X - Y );
+find_mismatch( [ { _, Y },{ _, Y },{ _, Y } | T ] ) -> find_mismatch( [ Y, Y | T ] );
+find_mismatch( [ { E, X },{ _, Y },{ _, Y } | _ ] ) -> E - ( X - Y );
+find_mismatch( [ { _, Y },{ E, X },{ _, Y } | _ ] ) -> E - ( X - Y );
+find_mismatch( [ { _, Y },{ _, Y },{ E, X } | _ ] ) -> E - ( X - Y );
 find_mismatch( _ ) -> none.
 
 -spec get_children( tower_name(), parent_to_children_map() ) -> [ tower_name() ].
@@ -76,14 +76,14 @@ find_weight_mismatch( Parent, ParentToChildrenMap, Weights ) ->
     ParentWeight = get_weight( Parent, Weights ),
     case get_children( Parent, ParentToChildrenMap ) of
         [] -> { ParentWeight, 0 };
-        Children -> 
+        Children ->
             ChildrenWeights = lists:map( fun( Child ) ->
                                                  { ChildWeight, SubWeight } = find_weight_mismatch( Child, ParentToChildrenMap, Weights ),
                                                  { ChildWeight, ChildWeight + SubWeight } end,
                                          Children ),
             case find_mismatch( ChildrenWeights ) of
                 none -> { ParentWeight, lists:sum( [ TotalWeight  || { _, TotalWeight } <- ChildrenWeights ] ) };
-                Correct -> throw(Correct)
+                Correct -> throw( Correct )
             end
     end.
 
