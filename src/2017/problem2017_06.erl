@@ -14,15 +14,15 @@ reallocate( Banks ) ->
     IncEveryBankBy = MaxBank div NumOfBanks,
     NumOfBanksToInc = MaxBank rem NumOfBanks,
 
-    CalcBankInc = fun( Idx ) when Idx == MaxBankIdx -> -MaxBank;
-                     ( Idx ) when Idx > MaxBankIdx, Idx =< ( MaxBankIdx + NumOfBanksToInc ) -> +1;
-                     ( Idx ) when Idx =< NumOfBanksToInc - ( NumOfBanks - MaxBankIdx ) -> +1;
-                     ( _ ) -> 0
-                  end,
-    BanksIncs = lists:map( fun( X ) -> X + IncEveryBankBy end,
-                           lists:map( CalcBankInc, lists:seq( 1, NumOfBanks ) ) ),
+    CalcBankDiff = fun( Idx ) when Idx == MaxBankIdx -> -MaxBank;
+                      ( Idx ) when Idx > MaxBankIdx, Idx =< ( MaxBankIdx + NumOfBanksToInc ) -> +1;
+                      ( Idx ) when Idx =< NumOfBanksToInc - ( NumOfBanks - MaxBankIdx ) -> +1;
+                      ( _ ) -> 0
+                   end,
+    BanksDiffs = lists:map( fun( X ) -> X + IncEveryBankBy end,
+                           lists:map( CalcBankDiff, lists:seq( 1, NumOfBanks ) ) ),
 
-    lists:zipwith( fun erlang:'+'/2, Banks, BanksIncs ).
+    lists:zipwith( fun erlang:'+'/2, Banks, BanksDiffs ).
 
 -spec run_reallocations( banks(), history(), non_neg_integer() ) -> { non_neg_integer(), banks() }.
 run_reallocations( Banks, History, Counter ) ->
