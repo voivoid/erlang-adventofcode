@@ -7,25 +7,25 @@
 -type state() :: { list( parser_state() ), counter(), counter() }.
 
 -spec process( char(), state() ) -> state().
-process( _, { [ bang | States ], Score, Garbage } ) ->
-    { States, Score, Garbage };
+process( _, { [ bang | States ], S, G } ) ->
+    { States, S, G };
 
-process( $!, { States, Score, Garbage } ) ->
-    { [ bang | States ], Score, Garbage };
+process( $!, { States, S, G } ) ->
+    { [ bang | States ], S, G };
 
-process( $>, { [ garbage | States ], Score, Garbage } ) -> 
-    { States, Score, Garbage };
+process( $>, { [ garbage | States ], S, G } ) ->
+    { States, S, G };
 
-process( _, { [ garbage | _ ] = States, Score, Garbage } ) ->
-    { States, Score, Garbage + 1 };
+process( _, { [ garbage | _ ] = States, S, G } ) ->
+    { States, S, G + 1 };
 
-process( $<, { States, Score, Garbage } ) ->    
-    { [ garbage | States ], Score, Garbage };
+process( $<, { States, S, G } ) ->
+    { [ garbage | States ], S, G };
 
-process( ${, { [ { group, N } | _ ] = States, Score, Garbage } ) ->
-    { [ { group, N + 1 } | States ], Score, Garbage };
-process( $}, { [ { group, N } | States ], Score, Garbage } ) ->
-    { States, Score + N, Garbage };
+process( ${, { [ { group, N } | _ ] = States, S, G } ) ->
+    { [ { group, N + 1 } | States ], S, G };
+process( $}, { [ { group, N } | States ], S, G } ) ->
+    { States, S + N, G };
 
 process( $,, States ) ->
     States.
