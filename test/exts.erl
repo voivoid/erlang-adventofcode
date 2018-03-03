@@ -27,18 +27,20 @@ zipper_test_() ->
                                            fun( Z ) -> ?assertEqual( { [], [ 1, 2, 3 ] }, Z ) end,
 
                                            fun( Z ) -> ?assertEqual( { [ 1 ], [ 2, 3 ] }, zipper:next( Z ) ) end,
-                                           fun( Z ) -> ?assertEqual( { [ 2, 1 ], [ 3 ] }, zipper:next_n( Z, 2 ) ) end,
-                                           fun( Z ) -> ?assertEqual( { [ 3, 2, 1 ], [] }, zipper:next_n( Z, 3 ) ) end,
-                                           fun( Z ) -> ?assertEqual( { [], [ 1, 2, 3 ] }, zipper:next_n( Z, 4 ) ) end,
+                                           fun( Z ) -> ?assertEqual( { [ 2, 1 ], [ 3 ] }, zipper:next_n( 2, Z ) ) end,
+                                           fun( Z ) -> ?assertEqual( { [], [ 1, 2, 3 ] }, zipper:next_n( 3, Z ) ) end,
 
-                                           fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:next_n( Z, 0 ) ) ) end,
-                                           fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:next_n( Z, 1 ) ) ) end,
-                                           fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:next_n( Z, 2 ) ) ) end,
-                                           fun( Z ) -> ?assertError( function_clause, zipper:get( zipper:next_n( Z, 3 ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:next_n( 0, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:next_n( 1, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:next_n( 2, Z ) ) ) end,
 
                                            fun( Z ) -> ?assertEqual( 42, zipper:get( zipper:update( 42, Z ) ) ) end,
                                            fun( Z ) -> ?assertEqual( [ 1, 2, 3 ], zipper:to_list( Z ) ) end,
-                                           fun( Z ) -> ?assertEqual( [ 1, 2, 3 ], zipper:to_list( zipper:next_n( Z, 2 ) ) ) end
+                                           fun( Z ) -> ?assertEqual( [ 1, 2, 3 ], zipper:to_list( zipper:next_n( 2, Z ) ) ) end,
+
+                                           fun( Z ) -> ?assertEqual( [ 1, 2 ], zipper:get_n( 2, Z ) ) end,
+                                           fun( Z ) -> ?assertEqual( [ 10, 11, 3 ], zipper:to_list( zipper:update_with_list( [ 10, 11 ], Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( [ 13, 11, 12 ], zipper:to_list( zipper:update_with_list( [ 10, 11, 12, 13 ], Z ) ) ) end
                                           ]
       }
     ].
