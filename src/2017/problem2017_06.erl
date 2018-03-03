@@ -1,5 +1,5 @@
 -module(problem2017_06).
--export([solve1/1, solve2/1]).
+-export([solve1/1, solve2/1, reallocate/1]).
 
 -type block() :: non_neg_integer().
 -type banks() :: [ block() ].
@@ -14,13 +14,15 @@ reallocate( Banks ) ->
     IncEveryBankBy = MaxBank div NumOfBanks,
     NumOfBanksToInc = MaxBank rem NumOfBanks,
 
-    BankIncs = fun() -> 
-                       BankIncs = lists:append( [ [-MaxBank], lists:duplicate( NumOfBanksToInc, 1 ), lists:duplicate( NumOfBanks - 1 - NumOfBanksToInc, 0 ) ] ),
-                       ShiftedBankIncs = lists_exts:shiftr( MaxBankIdx - 1, BankIncs ),
-                       lists:map( fun( N ) -> N + IncEveryBankBy end, ShiftedBankIncs ) end (),
-    
-    
-    lists:zipwith( fun erlang:'+'/2, Banks, BankIncs ).
+    CalcBankInc = fun( Idx ) when Idx == MaxBankIdx -> -MaxBank;
+                     ( Idx ) when Idx > MaxBankIdx, Idx =< ( MaxBankIdx + NumOfBanksToInc ) -> +1;
+                     ( Idx ) when Idx =< NumOfBanksToInc - ( NumOfBanks - MaxBankIdx ) -> +1;
+                     ( _ ) -> 0
+                  end,
+    BanksIncs = lists:map( fun( X ) -> X + IncEveryBankBy end,
+                           lists:map( CalcBankInc, lists:seq( 1, NumOfBanks ) ) ),
+
+    lists:zipwith( fun erlang:'+'/2, Banks, BanksIncs ).
 
 -spec run_reallocations( banks(), history(), non_neg_integer() ) -> { non_neg_integer(), banks() }.
 run_reallocations( Banks, History, Counter ) ->
