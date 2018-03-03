@@ -1,4 +1,4 @@
-AOC
+Advent of Code
 =====
 
 Advent of Code ( https://adventofcode.com ) 2015-2017 solutions
