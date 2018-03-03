@@ -1,5 +1,5 @@
 -module(problem2017_06).
--export([solve1/1, solve2/1, reallocate/1]).
+-export([solve1/1, solve2/1]).
 
 -type block() :: non_neg_integer().
 -type banks() :: [ block() ].

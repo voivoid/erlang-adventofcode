@@ -19,3 +19,5 @@ problem_06_2_test_() -> utils:make_test( "2017_06", fun problem2017_06:solve2/1,
 problem_07_1_test_() -> utils:make_test( "2017_07", fun problem2017_07:solve1/1, "dgoocsw" ).
 problem_07_2_test_() -> utils:make_test( "2017_07", fun problem2017_07:solve2/1, 1275 ).
 
+problem_08_1_test_() -> utils:make_test( "2017_08", fun problem2017_08:solve1/1, 5752 ).
+problem_08_2_test_() -> utils:make_test( "2017_08", fun problem2017_08:solve2/1, 6366 ).
