@@ -24,3 +24,19 @@ solve2(Input) ->
         length( Sorted ) == length( lists:usort( Sorted ) ) end,
     solve( Input, IsValidLine ).
                            
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+solve1_test_() ->
+    [ ?_assertEqual( 1 , solve1( "aa bb cc dd ee" ) ),
+      ?_assertEqual( 0 , solve1( "aa bb cc dd aa" ) ),
+      ?_assertEqual( 1 , solve1( "aa bb cc dd aaa" ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 1, solve2( "abcde fghij" ) ),
+      ?_assertEqual( 0, solve2( "abcde xyz ecdab" ) ),
+      ?_assertEqual( 1, solve2( "a ab abc abd abf abj" ) ),
+      ?_assertEqual( 1, solve2( "iiii oiii ooii oooi oooo" ) ),
+      ?_assertEqual( 0, solve2( "oiii ioii iioi iiio" ) ) ].

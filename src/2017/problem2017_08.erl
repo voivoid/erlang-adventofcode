@@ -66,3 +66,20 @@ solve1( Input ) ->
 solve2( Input ) ->
     { _, MaxRegEver } = solve( Input ),
     MaxRegEver.
+
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+test_input() ->
+    "b inc 5 if a > 1
+     a inc 1 if b < 5
+     c dec -10 if a >= 1
+     c inc -20 if c == 10".
+
+solve1_test_() ->
+    [ ?_assertEqual( 1 , solve1( test_input() ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 10, solve2( test_input() ) ) ].

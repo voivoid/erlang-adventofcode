@@ -22,3 +22,22 @@ iter( Floor, [ _ | Input ], Counter ) ->
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     iter( 0, Input, 0 ).
+
+-include_lib("eunit/include/eunit.hrl").
+
+
+solve1_test_() ->
+    [ ?_assertEqual( 0, solve1( "(())" ) ),
+      ?_assertEqual( 0, solve1( "()()" ) ),
+      ?_assertEqual( 3, solve1( "(((" ) ),
+      ?_assertEqual( 3, solve1( "(()(()(" ) ),
+      ?_assertEqual( 3, solve1( "))(((((" ) ),
+      ?_assertEqual( -1, solve1( "())" ) ),
+      ?_assertEqual( -1, solve1( "))(" ) ),
+      ?_assertEqual( -3, solve1( ")))" ) ),
+      ?_assertEqual( -3, solve1( ")())())" ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 1, solve2( ")" ) ),
+      ?_assertEqual( 5, solve2( "()())" ) ) ].

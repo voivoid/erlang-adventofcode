@@ -49,3 +49,14 @@ solve2( Input ) ->
     { _, LastBanks } = run_reallocations( Banks, sets:new(), 0 ),
     { Counter, _ } = run_reallocations( LastBanks, sets:new(), 0 ),
     Counter.
+
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+solve1_test_() ->
+    [ ?_assertEqual( 5 , solve1( "0 2 7 0" ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 4, solve2( "0 2 7 0" ) ) ].

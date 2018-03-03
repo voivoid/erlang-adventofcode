@@ -42,3 +42,17 @@ move2( [Char|Input], Map, Coord1, Coord2 ) -> % '^'
 -spec solve2( [ chars() ] ) -> non_neg_integer().
 solve2(Input) ->
     move2(Input, #{{0,0} => 2}, {0, 0}, {0, 0} ).
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+
+solve1_test_() ->
+    [ ?_assertEqual( 2, solve1( ">" ) ),
+      ?_assertEqual( 4, solve1( "^>v<" ) ),
+      ?_assertEqual( 2, solve1( "^v^v^v^v^v" ) ) ].
+
+solve2_test_() ->
+    [ ?_assertEqual( 3, solve2( "^v" ) ),
+      ?_assertEqual( 3, solve2( "^>v<" ) ),
+      ?_assertEqual( 11, solve2( "^v^v^v^v^v" ) ) ].

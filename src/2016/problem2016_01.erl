@@ -1,5 +1,5 @@
 -module(problem2016_01).
--export([solve1/1, solve2/1]).
+-export([solve1/1]).
 
 -type turn() :: left | right.
 -type dir() :: north | west | south | east.
@@ -44,6 +44,18 @@ solve1( Input ) ->
     abs( X ) + abs( Y ).
 
 
--spec solve2( string() ) -> non_neg_integer().
-solve2( Input ) ->
-    0.
+%-spec solve2( string() ) -> non_neg_integer().
+%solve2( _Input ) ->
+%    0.
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+
+solve1_test_() ->
+    [ ?_assertEqual( 5, solve1( "R2, L3" ) ),
+      ?_assertEqual( 2, solve1( "R2, R2, R2" ) ),
+      ?_assertEqual( 12, solve1( "R5, L5, R5, R3" ) ) ].
+
+%solve2_test_() ->
+%    [ ?_assertEqual( 4, solve2( "R8, R4, R4, R8" ) ) ].

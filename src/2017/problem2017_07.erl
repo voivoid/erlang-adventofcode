@@ -93,3 +93,28 @@ solve2( Input ) ->
     { ParentToChildrenMap, ChildToParentMap, Weights } = make_tower_maps ( Input ),
     Base = find_base_tower( ParentToChildrenMap, ChildToParentMap ),
     catch calc_tower_load_weight( Base, ParentToChildrenMap, Weights ).
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+test_input() ->
+    "pbga (66)
+     xhth (57)
+     ebii (61)
+     havc (66)
+     ktlj (57)
+     fwft (72) -> ktlj, cntj, xhth
+     qoyq (66)
+     padx (45) -> pbga, havc, qoyq
+     tknk (41) -> ugml, padx, fwft
+     jptl (61)
+     ugml (68) -> gyxo, ebii, jptl
+     gyxo (61)
+     cntj (57)".
+
+solve1_test_() ->
+    [ ?_assertEqual( "tknk" , solve1( test_input() ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 60, solve2( test_input() ) ) ].

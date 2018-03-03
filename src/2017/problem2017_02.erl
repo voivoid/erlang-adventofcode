@@ -25,3 +25,14 @@ solve2( Input ) ->
                           lists:sum( [ M div N || N <- Ints, M <- lists:delete( N, Ints ), M rem N == 0 ] ) 
                   end,
     solve( Input, CalcRowDiff ).
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+
+solve1_test_() ->
+    [ ?_assertEqual( 18 , solve1( "5 1 9 5 \n 7 5 3 \n 2 4 6 8" ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 9, solve2( "5 9 2 8 \n 9 4 7 3 \n 3 8 6 5" ) ) ].

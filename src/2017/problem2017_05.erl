@@ -38,3 +38,13 @@ solve2(Input) ->
     solve( Input, CalcNewOffset ).
 
 
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+solve1_test_() ->
+    [ ?_assertEqual( 5 , solve1( "0\n3\n0\n1\n-3" ) ) ].
+
+
+solve2_test_() ->
+    [ ?_assertEqual( 10, solve2( "0\n3\n0\n1\n-3" ) ) ].

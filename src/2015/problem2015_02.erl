@@ -32,3 +32,15 @@ solve2( Input ) ->
     Sum.
                             
     
+
+
+-include_lib("eunit/include/eunit.hrl").
+
+
+solve1_test_() ->
+    [ ?_assertEqual( 58, solve1( "2x3x4" ) ),
+      ?_assertEqual( 43, solve1( "1x1x10" ) ) ].
+
+solve2_test_() ->
+    [ ?_assertEqual( 34, solve2( "2x3x4" ) ),
+      ?_assertEqual( 14, solve2( "1x1x10" ) ) ].
