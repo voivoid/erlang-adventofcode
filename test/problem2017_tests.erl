@@ -13,6 +13,9 @@ problem_04_2_test_() -> utils:make_test( "2017_04", fun problem2017_04:solve2/1,
 problem_05_1_test_() -> utils:make_test( "2017_05", fun problem2017_05:solve1/1, 355965 ).
 problem_05_2_test_() -> utils:make_test( "2017_05", fun problem2017_05:solve2/1, 26948068 ).
 
+problem_06_1_test_() -> utils:make_test( "2017_06", fun problem2017_06:solve1/1, 3156 ).
+problem_06_2_test_() -> utils:make_test( "2017_06", fun problem2017_06:solve2/1, 1610 ).
+
 problem_07_1_test_() -> utils:make_test( "2017_07", fun problem2017_07:solve1/1, "dgoocsw" ).
 problem_07_2_test_() -> utils:make_test( "2017_07", fun problem2017_07:solve2/1, 1275 ).
 
