@@ -10,8 +10,8 @@ problem_02_2_test_() -> utils:make_test( "2017_02", fun problem2017_02:solve2/1,
 problem_04_1_test_() -> utils:make_test( "2017_04", fun problem2017_04:solve1/1, 455 ).
 problem_04_2_test_() -> utils:make_test( "2017_04", fun problem2017_04:solve2/1, 186 ).
 
-problem_05_1_test_() -> utils:make_test( "2017_05", fun problem2017_05:solve1/1, 355965 ).
-problem_05_2_test_() -> utils:make_test( "2017_05", fun problem2017_05:solve2/1, 26948068 ).
+%problem_05_1_test_() -> utils:make_test( "2017_05", fun problem2017_05:solve1/1, 355965 ).
+%problem_05_2_test_() -> utils:make_test( "2017_05", fun problem2017_05:solve2/1, 26948068 ).
 
 problem_06_1_test_() -> utils:make_test( "2017_06", fun problem2017_06:solve1/1, 3156 ).
 problem_06_2_test_() -> utils:make_test( "2017_06", fun problem2017_06:solve2/1, 1610 ).
@@ -27,3 +27,6 @@ problem_09_2_test_() -> utils:make_test( "2017_09", fun problem2017_09:solve2/1,
 
 problem_10_1_test_() -> utils:make_test( "2017_10", fun problem2017_10:solve1/1, 826 ).
 problem_10_2_test_() -> utils:make_test( "2017_10", fun problem2017_10:solve2/1, "d067d3f14d07e09c2e7308c3926605c4" ).
+
+problem_11_1_test_() -> utils:make_test( "2017_11", fun problem2017_11:solve1/1, 682 ).
+problem_11_2_test_() -> utils:make_test( "2017_11", fun problem2017_11:solve2/1, 1406 ).
