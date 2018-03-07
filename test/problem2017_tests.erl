@@ -30,3 +30,5 @@ problem_10_2_test_() -> utils:make_test( "2017_10", fun problem2017_10:solve2/1,
 
 problem_11_1_test_() -> utils:make_test( "2017_11", fun problem2017_11:solve1/1, 682 ).
 problem_11_2_test_() -> utils:make_test( "2017_11", fun problem2017_11:solve2/1, 1406 ).
+
+problem_12_1_test_() -> utils:make_test( "2017_12", fun problem2017_12:solve1/1, 283 ).
