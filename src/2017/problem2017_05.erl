@@ -4,23 +4,24 @@
 
 -type offset_calculator() :: fun( ( integer() ) -> integer() ).
 
--spec jump( Offsets :: zipper:zipper( integer() ),
+-spec jump( Offsets :: #{ integer() := integer() },
             Len :: integer(),
             Idx :: array:array_index(),
             Counter :: integer(),
             CalcNewOffset :: offset_calculator() )
-           -> non_neg_integer().
+          -> non_neg_integer().
 
 jump( _, Len, Idx, Counter, _ ) when Idx < 0; Idx >= Len -> Counter;
-jump ( Offsets, Len, Idx, Counter, CalcNewOffset ) ->
-    Offset = zipper:get( Offsets ),
+jump( OffsetsMap, Len, Idx, Counter, CalcNewOffset ) ->
+    Offset = maps:get( Idx, OffsetsMap ),
     NewOffset = CalcNewOffset( Offset ),
-    jump( zipper:next_n( Offset, zipper:update( NewOffset, Offsets ) ), Len, Idx + Offset, Counter + 1, CalcNewOffset ).
+    jump( maps:put( Idx, NewOffset, OffsetsMap ),Len, Idx + Offset, Counter + 1, CalcNewOffset ).
 
 -spec solve( string(), offset_calculator() ) -> non_neg_integer().
 solve( Input, CalcNewOffset ) ->
     Offsets = lists:map( fun list_to_integer/1, string:tokens( Input, "\n" ) ),
-    jump( zipper:from_list( Offsets ), erlang:length( Offsets ), 0, 0, CalcNewOffset ).
+    OffsetsMap = maps:from_list( lists:zip( lists:seq( 0, erlang:length( Offsets ) - 1 ), Offsets ) ),
+    jump( OffsetsMap, erlang:length( Offsets ), 0, 0, CalcNewOffset ).
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
