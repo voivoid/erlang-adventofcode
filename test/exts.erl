@@ -21,6 +21,9 @@ lists_exts_shiftr_test_() ->
       ?_assertEqual( [ 2, 3, 1 ], lists_exts:shiftr( 2, [ 1, 2, 3 ] ) ),
       ?_assertEqual( [ 1, 2, 3 ], lists_exts:shiftr( 3, [ 1, 2, 3 ] ) ) ].
 
+lists_exts_parallel_map_test_() ->
+    [ ?_assertEqual( [ 2, 3, 4 ], lists_exts:parallel_map( fun( X ) -> X + 1 end, [ 1, 2, 3 ] ) ) ].
+
 
 zipper_test_() ->
     [ { with, zipper:from_list( [ 1, 2, 3 ] ), [

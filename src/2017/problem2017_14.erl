@@ -20,7 +20,7 @@ translate_to_bits1_sum( Hash ) ->
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     Inputs = gen_inputs( Input ),
-    Hashes =  lists:map( fun calc_hash/1, Inputs ),
+    Hashes =  lists_exts:parallel_map( fun calc_hash/1, Inputs ),
     Bits1List = lists:map( fun translate_to_bits1_sum/1, Hashes ),
     lists:sum( Bits1List ).
 
@@ -33,7 +33,7 @@ solve2( _Input ) ->
 -include_lib("eunit/include/eunit.hrl").
 
 solve1_test_() ->
-    [ { timeout, 30, ?_assertEqual( 8108, solve1( "flqrgnkx" ) ) } ].
+    [ ?_assertEqual( 8108, solve1( "flqrgnkx" ) ) ].
 
 solve2_test_() ->
     [ ?_assertEqual( 1242, solve2( "flqrgnkx" ) ) ].

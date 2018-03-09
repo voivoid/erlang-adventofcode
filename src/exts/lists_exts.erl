@@ -1,5 +1,5 @@
 -module(lists_exts).
--export([index/2, shiftl/2, shiftr/2]).
+-export([index/2, shiftl/2, shiftr/2, parallel_map/2]).
 
 -spec index( T, list( T ) ) -> non_neg_integer() | not_found.
 index( X, List ) -> index_impl( X, List, 1 ).
@@ -21,3 +21,26 @@ shiftl_impl( N, [ X | XS ], Acc ) -> shiftl_impl( N - 1, XS, [ X | Acc ] ).
 
 -spec shiftr( non_neg_integer(), list( T ) ) -> list( T ).
 shiftr( N, L ) -> shiftl( erlang:length( L ) - N, L ).
+
+
+-spec parallel_map( fun( ( T ) -> T ), list( T ) ) -> list( T ).
+parallel_map( F, XS ) ->
+    Parent = self(),
+    Running = [ erlang:spawn_monitor( fun() -> Parent ! { self(), F( X ) } end ) || X <- XS ],
+    parallel_map_collect( Running ).
+
+-spec parallel_map_collect( list( { pid(), reference() } ) ) -> list().
+parallel_map_collect( [] ) -> [];
+parallel_map_collect( [ { Pid, Ref } | XS ] ) -> 
+    receive
+        { Pid, Res } ->
+            erlang:demonitor( Ref, [flush] ),
+            [ Res | parallel_map_collect( XS ) ]
+    after 10000 ->
+            error( parallel_map_timeout )
+    end.
+              
+        
+            
+    
+    

@@ -6,12 +6,14 @@
 -type skip() :: non_neg_integer().
 -type process_state() :: { zipper:zipper( num() ), skip() }.
 
+-define(ZipperLen, 255).
+
 -spec process_len( len(), process_state() ) -> process_state().
 process_len( Len, { NumsZipper, Skip } ) ->
     ReversedFirstNums = lists:reverse( zipper:get_n( Len, NumsZipper ) ),
     UpdatedNumsZipper = zipper:update_with_list( ReversedFirstNums, NumsZipper ),
 
-    { zipper:next_n( Skip, UpdatedNumsZipper ), Skip + 1 }.
+    { zipper:next_n( Skip rem (?ZipperLen + 1 ), UpdatedNumsZipper ), Skip + 1 }.
 
 -spec run_processing( list( len() ), process_state() ) -> process_state().
 run_processing( Lengths, State ) ->
@@ -54,10 +56,10 @@ solve1( Input ) ->
 -spec solve2( string() ) -> string().
 solve2( Input ) ->
     Lengths = Input ++ [ 17, 31, 73, 47, 23 ],
-    InitNumsZipper = zipper:from_list( lists:seq( 0, 255 ) ),
+    InitNumsZipper = zipper:from_list( lists:seq( 0, ?ZipperLen ) ),
     { ResultNumsZipper, _ } = lists:foldl( fun (_, State) -> run_processing( Lengths, State ) end,
-                                       { InitNumsZipper, 0 },
-                                       lists:seq( 1, 64 ) ),
+                                           { InitNumsZipper, 0 },
+                                           lists:seq( 1, 64 ) ),
     HashNums = reduce_to_dense_hash( zipper:to_list( ResultNumsZipper ) ),
 
     hash_nums_to_hex_str( HashNums ).
