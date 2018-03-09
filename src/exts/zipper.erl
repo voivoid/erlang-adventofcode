@@ -1,13 +1,13 @@
 -module(zipper).
--export([make/1, next/1, next_n/2, get/1, get_n/2, update/2, update_with_list/2, to_list/1]).
+-export([from_list/1, next/1, next_n/2, prev/1, prev_n/2, get/1, get_n/2, update/2, update_with_list/2, to_list/1]).
 
 -type zipper( T ) :: { list( T ), list( T ) }.
 
 -export_type([zipper/1]).
 
 
--spec make( list( T ) ) -> zipper( T ).
-make( L ) -> { [], L }.
+-spec from_list( list( T ) ) -> zipper( T ).
+from_list( L ) -> { [], L }.
 
 -spec next( zipper( T ) ) -> zipper( T ).
 next( { Prev, [ Current ] } ) ->
@@ -15,8 +15,20 @@ next( { Prev, [ Current ] } ) ->
 next( { Prev, [ Current | Next ] } ) ->
                    { [ Current | Prev ], Next }.
 
--spec next_n( non_neg_integer(), zipper( T ) ) -> zipper( T ).
-next_n( N, Zipper ) -> algos:iterate( fun next/1, Zipper, N ).
+-spec prev( zipper( T ) ) -> zipper( T ).
+prev( { [], Next } ) ->
+    [ Last | First ] = lists:reverse( Next ),
+    { First, [ Last ] };
+prev( { [ Prev | Prevs ], Next } ) ->
+    { Prevs, [ Prev | Next ] }.
+
+-spec prev_n( integer(), zipper( T ) ) -> zipper( T ).
+prev_n( N, Zipper ) when N >= 0 -> algos:iterate( fun prev/1, Zipper, N );
+prev_n( N, Zipper ) when N < 0 -> next_n( erlang:abs( N ), Zipper ).
+
+-spec next_n( integer(), zipper( T ) ) -> zipper( T ).
+next_n( N, Zipper ) when N >= 0 -> algos:iterate( fun next/1, Zipper, N );
+next_n( N, Zipper ) when N < 0 -> prev_n( erlang:abs( N ), Zipper ).
     
 
 -spec get( zipper( T ) ) -> T.

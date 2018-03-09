@@ -23,16 +23,27 @@ lists_exts_shiftr_test_() ->
 
 
 zipper_test_() ->
-    [ { with, zipper:make( [ 1, 2, 3 ] ), [
+    [ { with, zipper:from_list( [ 1, 2, 3 ] ), [
                                            fun( Z ) -> ?assertEqual( { [], [ 1, 2, 3 ] }, Z ) end,
 
                                            fun( Z ) -> ?assertEqual( { [ 1 ], [ 2, 3 ] }, zipper:next( Z ) ) end,
-                                           fun( Z ) -> ?assertEqual( { [ 2, 1 ], [ 3 ] }, zipper:next_n( 2, Z ) ) end,
-                                           fun( Z ) -> ?assertEqual( { [], [ 1, 2, 3 ] }, zipper:next_n( 3, Z ) ) end,
+                                           fun( Z ) -> ?assertEqual( { [ 2, 1 ], [ 3 ] }, zipper:prev( Z ) ) end,
+
 
                                            fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:next_n( 0, Z ) ) ) end,
                                            fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:next_n( 1, Z ) ) ) end,
                                            fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:next_n( 2, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:next_n( 3, Z ) ) ) end,
+
+                                           fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:prev_n( 0, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:prev_n( 1, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:prev_n( 2, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:prev_n( 3, Z ) ) ) end,
+
+                                           fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:next_n( -1, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:next_n( -2, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:prev_n( -1, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:prev_n( -2, Z ) ) ) end,
 
                                            fun( Z ) -> ?assertEqual( 42, zipper:get( zipper:update( 42, Z ) ) ) end,
                                            fun( Z ) -> ?assertEqual( [ 1, 2, 3 ], zipper:to_list( Z ) ) end,

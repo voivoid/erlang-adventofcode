@@ -41,7 +41,7 @@ hash_nums_to_hex_str( HashNums ) ->
 -spec solve1( string(), non_neg_integer() ) -> non_neg_integer().
 solve1( Input, N ) ->
     Lengths = lists:map( fun erlang:list_to_integer/1, string:tokens( Input, ", " ) ),
-    InitNumsZipper = zipper:make( lists:seq( 0, N ) ),
+    InitNumsZipper = zipper:from_list( lists:seq( 0, N ) ),
     { ResultNumsZipper, _ } = run_processing( Lengths, { InitNumsZipper, 0 } ),
 
     [ A, B | _ ] = zipper:to_list( ResultNumsZipper ),
@@ -54,7 +54,7 @@ solve1( Input ) ->
 -spec solve2( string() ) -> string().
 solve2( Input ) ->
     Lengths = Input ++ [ 17, 31, 73, 47, 23 ],
-    InitNumsZipper = zipper:make( lists:seq( 0, 255 ) ),
+    InitNumsZipper = zipper:from_list( lists:seq( 0, 255 ) ),
     { ResultNumsZipper, _ } = lists:foldl( fun (_, State) -> run_processing( Lengths, State ) end,
                                        { InitNumsZipper, 0 },
                                        lists:seq( 1, 64 ) ),
