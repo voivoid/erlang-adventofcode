@@ -28,8 +28,8 @@ move1( [Char|Input], Map, Coord ) ->
     move1( Input, increment_map( Map, NewCoord ), NewCoord  ).
 
 -spec solve1( [ chars() ] ) -> non_neg_integer().
-solve1(Input) ->
-    move1(Input, #{{0,0} => 1}, {0, 0}).
+solve1( Input ) ->
+    move1( Input, #{ { 0,0 } => 1 }, { 0, 0 } ).
 
 
 -spec move2( [ chars() ], coord_map(), coord(), coord() ) -> non_neg_integer().
@@ -40,8 +40,8 @@ move2( [Char|Input], Map, Coord1, Coord2 ) -> % '^'
     move2( Input, increment_map( Map, NewCoord ), Coord2, NewCoord ).
 
 -spec solve2( [ chars() ] ) -> non_neg_integer().
-solve2(Input) ->
-    move2(Input, #{{0,0} => 2}, {0, 0}, {0, 0} ).
+solve2( Input ) ->
+    move2( Input, #{ { 0,0 } => 2 }, { 0, 0 }, { 0, 0 } ).
 
 
 -include_lib("eunit/include/eunit.hrl").
