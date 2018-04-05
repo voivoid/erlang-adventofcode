@@ -1,8 +1,26 @@
 -module(problem2017_03).
 -export([solve1/1]).
 
-solve1( _Input ) ->
-    0.
+calc( Offset, OddSqrt ) ->
+    Rem = Offset rem OddSqrt,
+    HalfSqrt = OddSqrt div 2,
+    HalfSqrt + erlang:abs( Rem + 1 - HalfSqrt ).
+    
+
+calc( 1 ) -> 0;
+calc( N ) ->
+    Sqrt = erlang:ceil( math:sqrt( N ) ),
+    OddSqrt = case Sqrt rem 2 of
+                  0 -> Sqrt;
+                  1 -> Sqrt - 1
+              end,
+    PrevSqr = erlang:trunc( math:pow( OddSqrt - 1, 2 ) ),
+    Offset = N - ( PrevSqr + 1 ),
+    calc( Offset, OddSqrt ).
+
+solve1( Input ) ->
+    Num = erlang:list_to_integer( Input ),
+    calc( Num ).
 
 
 -include_lib("eunit/include/eunit.hrl").
