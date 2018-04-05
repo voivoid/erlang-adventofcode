@@ -1,5 +1,5 @@
 -module(problem2017_14).
--export([solve1/1, solve2/1]).
+-export([solve1/1, solve2/1, calc_hash/1]).
 
 -type hash() :: nonempty_string().
 
@@ -20,7 +20,7 @@ translate_to_bits1_sum( Hash ) ->
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     Inputs = gen_inputs( Input ),
-    Hashes =  lists_exts:parallel_map( fun calc_hash/1, Inputs ),
+    Hashes = rpc:pmap({?MODULE, calc_hash}, [], Inputs ),
     Bits1List = lists:map( fun translate_to_bits1_sum/1, Hashes ),
     lists:sum( Bits1List ).
 

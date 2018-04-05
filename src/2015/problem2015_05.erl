@@ -1,6 +1,5 @@
 -module(problem2015_05).
 -export([solve1/1, solve2/1]).
--compile([export_all, nowarn_export_all]).
 
 -spec is_vowel( char() ) -> boolean().
 is_vowel( C ) ->
