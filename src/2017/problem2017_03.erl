@@ -1,12 +1,13 @@
 -module(problem2017_03).
 -export([solve1/1]).
 
+-spec calc( integer(), integer() ) -> integer().
 calc( Offset, OddSqrt ) ->
     Rem = Offset rem OddSqrt,
     HalfSqrt = OddSqrt div 2,
     HalfSqrt + erlang:abs( Rem + 1 - HalfSqrt ).
     
-
+-spec calc( integer() ) -> integer().
 calc( 1 ) -> 0;
 calc( N ) ->
     Sqrt = erlang:ceil( math:sqrt( N ) ),
