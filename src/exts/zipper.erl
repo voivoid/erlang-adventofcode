@@ -1,5 +1,5 @@
 -module(zipper).
--export([from_list/1, next/1, next_n/2, prev/1, prev_n/2, get/1, get_n/2, update/2, update_with_list/2, to_list/1]).
+-export([from_list/1, next/1, next_n/2, prev/1, prev_n/2, get/1, get_n/2, update/2, update_with_list/2, to_list/1, prepend/2, append/2]).
 
 -type zipper( T ) :: { list( T ), list( T ) }.
 
@@ -49,8 +49,16 @@ update( New, { Prev, [ _ | Next ] } ) ->
 
 -spec update_with_list( list( T ), zipper( T ) ) -> zipper( T ).
 update_with_list( Updates, Zipper ) ->
-    lists:foldl( fun (U, Z) -> next( update( U, Z ) ) end, Zipper, Updates ).
-    
+    lists:foldl( fun ( U, Z ) -> next( update( U, Z ) ) end, Zipper, Updates ).
+
+
+-spec prepend( T, zipper( T ) ) -> zipper( T ).
+prepend( New, { Prev, [ Current | Next ] } ) ->
+    { Prev, [ New , Current | Next ] }.
+
+-spec append( T, zipper( T ) ) -> zipper( T ).
+append( New, { Prev, [ Current | Next ] } ) ->
+    { Prev, [ Current, New | Next ] }.
 
 -spec to_list( zipper( T ) ) -> list( T ).
 to_list( { Prev, Next } ) ->
