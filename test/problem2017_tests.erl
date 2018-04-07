@@ -1,4 +1,4 @@
--module( problem2017_tests ).
+-module(problem2017_tests).
 -include_lib("eunit/include/eunit.hrl").
 
 problem_01_1_test_() -> utils:make_test( "2017_01", fun problem2017_01:solve1/1, 1034 ).
@@ -43,3 +43,4 @@ problem_14_1_test_() -> utils:make_test( "2017_14", fun problem2017_14:solve1/1,
 problem_14_2_test_() -> utils:make_test( "2017_14", fun problem2017_14:solve2/1, 1182 ).
 
 problem_15_1_test_() -> utils:make_test( "2017_15", fun problem2017_15:solve1/1, 631 ).
+problem_15_2_test_() -> utils:make_test( "2017_15", fun problem2017_15:solve2/1, 279 ).
