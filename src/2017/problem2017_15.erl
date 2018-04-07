@@ -11,9 +11,7 @@ gen_next_b_value( Val ) ->
     gen_next_value( Val, 48271 ).
 
 match_lower_16_bits( A, B ) ->
-    <<_:48, FirstA:16>> = <<A:64>>,
-    <<_:48, FirstB:16>> = <<B:64>>,
-    FirstA == FirstB.
+    ( A band 16#FFFF ) == ( B band 16#FFFF ).
     
 count_matches( _, _, 0, Matches ) -> Matches;
 count_matches( A, B, PairsNum, Matches ) ->
@@ -43,4 +41,3 @@ solve1( Input ) ->
 
 solve1_test_() ->
     [ ?_assertEqual( 588, solve1("Generator A starts with 65\nGenerator B starts with 8921") ) ].
-
