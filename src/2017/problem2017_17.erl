@@ -4,12 +4,12 @@
 run_steps( _, Zipper, Counter, Counter ) ->
     Zipper;
 run_steps( Stepping, Zipper, StopN, Counter ) ->
-    UpdatedZipper = zipper:prepend( Counter, zipper:next_n( Stepping + 1, Zipper ) ),
+    UpdatedZipper = zipper:next( zipper:append( Counter, zipper:next_n( Stepping, Zipper ) ) ),
     run_steps( Stepping, UpdatedZipper, StopN, Counter + 1 ).    
 
 solve1( Input ) ->
     Stepping = erlang:list_to_integer( Input ),
-    Zipper = run_steps( Stepping, zipper:from_list( [0] ), 2018, 1 ),
+    Zipper = run_steps( Stepping, zipper:from_list( [ 0 ] ), 2018, 1 ),
     zipper:get( zipper:next( Zipper ) ).
 
 find_next_after_zero( Zipper ) ->

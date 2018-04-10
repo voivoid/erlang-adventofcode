@@ -1,5 +1,5 @@
 -module(zipper).
--export([from_list/1, next/1, next_n/2, prev/1, prev_n/2, get/1, get_n/2, update/2, update_with_list/2, to_list/1, prepend/2, append/2]).
+-export([from_list/1, to_list/1, next/1, next_n/2, prev/1, prev_n/2, get/1, get_n/2, update/2, update_with_list/2, prepend/2, append/2, is_empty/1, is_first/1, is_last/1, pos/1, len/1]).
 
 -type zipper( T ) :: { list( T ), list( T ) }.
 
@@ -63,3 +63,22 @@ append( New, { Prev, [ Current | Next ] } ) ->
 -spec to_list( zipper( T ) ) -> list( T ).
 to_list( { Prev, Next } ) ->
     lists:reverse( Prev ) ++ Next.
+
+-spec is_empty( zipper( _ ) ) -> boolean().
+is_empty( { [], [] } ) -> true;
+is_empty( _ ) -> false.
+
+-spec is_first( zipper( _ ) ) -> boolean().
+is_first( { [], _ } ) -> true;
+is_first( _ ) -> false.
+
+-spec is_last( zipper( _ ) ) -> boolean().
+is_last( { _, [] } ) -> true;
+is_last( { _, [ _ ] } ) -> true;
+is_last( _ ) -> false.
+
+-spec pos( zipper( _ ) ) -> non_neg_integer().
+pos( { Prev, _ } ) -> erlang:length( Prev ) + 1.
+
+-spec len( zipper( _ ) ) -> non_neg_integer().
+len( { Prev, Next } ) -> erlang:length( Prev ) + erlang:length( Next ).

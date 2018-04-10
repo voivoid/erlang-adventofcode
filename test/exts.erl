@@ -28,7 +28,6 @@ zipper_test_() ->
                                            fun( Z ) -> ?assertEqual( { [ 1 ], [ 2, 3 ] }, zipper:next( Z ) ) end,
                                            fun( Z ) -> ?assertEqual( { [ 2, 1 ], [ 3 ] }, zipper:prev( Z ) ) end,
 
-
                                            fun( Z ) -> ?assertEqual( 1, zipper:get( zipper:next_n( 0, Z ) ) ) end,
                                            fun( Z ) -> ?assertEqual( 2, zipper:get( zipper:next_n( 1, Z ) ) ) end,
                                            fun( Z ) -> ?assertEqual( 3, zipper:get( zipper:next_n( 2, Z ) ) ) end,
@@ -60,8 +59,31 @@ zipper_test_() ->
                                            fun( Z ) -> ?assertEqual( [ 1, 0, 2, 3 ], zipper:to_list( zipper:append( 0, zipper:next_n( 0, Z ) ) ) ) end,
                                            fun( Z ) -> ?assertEqual( [ 1, 2, 0, 3 ], zipper:to_list( zipper:append( 0, zipper:next_n( 1, Z ) ) ) ) end,
                                            fun( Z ) -> ?assertEqual( [ 1, 2, 3, 0 ], zipper:to_list( zipper:append( 0, zipper:next_n( 2, Z ) ) ) ) end,
-                                           fun( Z ) -> ?assertEqual( [ 1, 0, 2, 3 ], zipper:to_list( zipper:append( 0, zipper:next_n( 3, Z ) ) ) ) end
+                                           fun( Z ) -> ?assertEqual( [ 1, 0, 2, 3 ], zipper:to_list( zipper:append( 0, zipper:next_n( 3, Z ) ) ) ) end,
+
+                                           fun( Z ) -> ?assert( zipper:is_first( zipper:next_n( 0, Z ) ) ) end,
+                                           fun( Z ) -> ?assertNot( zipper:is_first( zipper:next_n( 1, Z ) ) ) end,
+                                           fun( Z ) -> ?assertNot( zipper:is_first( zipper:next_n( 2, Z ) ) ) end,
+                                           fun( Z ) -> ?assert( zipper:is_first( zipper:next_n( 3, Z ) ) ) end,
+
+                                           fun( Z ) -> ?assertNot( zipper:is_last( zipper:next_n( 0, Z ) ) ) end,
+                                           fun( Z ) -> ?assertNot( zipper:is_last( zipper:next_n( 1, Z ) ) ) end,
+                                           fun( Z ) -> ?assert( zipper:is_last( zipper:next_n( 2, Z ) ) ) end,
+                                           fun( Z ) -> ?assertNot( zipper:is_last( zipper:next_n( 3, Z ) ) ) end,
+
+                                           fun( Z ) -> ?assertEqual( 1, zipper:pos( zipper:next_n( 0, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 2, zipper:pos( zipper:next_n( 1, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 3, zipper:pos( zipper:next_n( 2, Z ) ) ) end,
+                                           fun( Z ) -> ?assertEqual( 1, zipper:pos( zipper:next_n( 3, Z ) ) ) end
 
                                           ]
-      }
-    ].
+      },
+
+      [ ?_assert( zipper:is_empty( zipper:from_list( [] ) ) ),
+        ?_assertNot( zipper:is_empty( zipper:from_list( [ 1 ] ) ) ),
+
+        ?_assertEqual( 0, zipper:len( zipper:from_list( [] ) ) ),
+        ?_assertEqual( 3, zipper:len( zipper:from_list( [ 1, 2, 3 ] ) ) )
+
+      ]
+].
