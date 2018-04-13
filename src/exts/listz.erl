@@ -1,4 +1,4 @@
--module(lists_exts).
+-module(listz).
 -export([index/2, shiftl/2, shiftr/2]).
 
 -spec index( T, list( T ) ) -> non_neg_integer() | not_found.

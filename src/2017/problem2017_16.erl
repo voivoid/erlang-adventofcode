@@ -10,7 +10,7 @@
 
 -spec do_move( move(), progs() ) -> progs().
 do_move( { s, ProgsToMove }, Progs ) ->
-    lists_exts:shiftr( ProgsToMove, Progs );
+    listz:shiftr( ProgsToMove, Progs );
 do_move( { x, From, To }, Progs ) ->
     A = lists:nth( From + 1, Progs ),
     B = lists:nth( To + 1, Progs ),

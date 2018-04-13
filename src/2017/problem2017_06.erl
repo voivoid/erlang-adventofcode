@@ -10,7 +10,7 @@
 reallocate( Banks ) ->
     NumOfBanks = erlang:length( Banks ),
     MaxBank = lists:max( Banks ),
-    MaxBankIdx = lists_exts:index( MaxBank, Banks ),
+    MaxBankIdx = listz:index( MaxBank, Banks ),
     IncEveryBankBy = MaxBank div NumOfBanks,
     NumOfBanksToInc = MaxBank rem NumOfBanks,
 
