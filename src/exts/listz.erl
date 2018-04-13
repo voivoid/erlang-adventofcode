@@ -1,5 +1,5 @@
 -module(listz).
--export([index/2, shiftl/2, shiftr/2]).
+-export([index/2, shiftl/2, shiftr/2, find/2]).
 
 -spec index( T, list( T ) ) -> non_neg_integer() | not_found.
 index( X, List ) -> index_impl( X, List, 1 ).
@@ -21,3 +21,10 @@ shiftl_impl( N, [ X | XS ], Acc ) -> shiftl_impl( N - 1, XS, [ X | Acc ] ).
 
 -spec shiftr( non_neg_integer(), list( T ) ) -> list( T ).
 shiftr( N, L ) -> shiftl( erlang:length( L ) - N, L ).
+
+-spec find( fun( ( T ) -> boolean() ), list( T ) ) -> T | not_found.
+find( _, [] ) -> not_found;
+find( Pred, [ X | XS ] ) -> case Pred( X ) of
+                                false -> find( Pred, XS );
+                                true -> X
+                            end.
