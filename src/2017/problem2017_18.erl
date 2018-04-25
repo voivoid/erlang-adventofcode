@@ -35,10 +35,14 @@ get_val( Reg, RegMap ) ->
         _ -> 0
     end.
 
+stop_jmp_offset() ->
+    99999.
+
 update_regmap( Reg, Val, RegMap ) ->
     RegMap#{ Reg => Val }.
 
 -define(DEFAULT_JMP_OFFSET, 1).
+-define(COUNTER_REG, "counter").
 
 run_common_command( { set, Reg, Val }, RegMap ) ->
     { update_regmap( Reg, get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
@@ -67,42 +71,64 @@ run_commands( ZipperCmds, RegMap, CmdRunner ) ->
 
     NextCmdNum = zipper:pos( ZipperCmds ) + JumpOffset,
     IsLastCmd = ( NextCmdNum > zipper:len( ZipperCmds ) ) or ( NextCmdNum < 1 ),
-    
+
     case IsLastCmd of
-        true -> get_val( "snd", RegMap );
+        true -> get_val( "snd", UpdatedRegMap );
         false -> run_commands( zipper:next_n( JumpOffset, ZipperCmds ), UpdatedRegMap, CmdRunner )
     end.
-
-
 
 solve1( Input ) ->
     ZipperCmds = parse_commands( Input ),
 
     CmdRunner = fun( { snd, Val }, RegMap ) ->
-                       { update_regmap( "snd", get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
-                  ( { rcv, X }, RegMap ) ->
-                       case get_val( X, RegMap ) of
-                           XVal when XVal /= 0 -> { RegMap, zipper:len( ZipperCmds ) };
-                           _ -> { RegMap, ?DEFAULT_JMP_OFFSET }
-                       end;
-                  ( _, _ ) -> unhandled
+                        { update_regmap( "snd", get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+                   ( { rcv, X }, RegMap ) ->
+                        case get_val( X, RegMap ) of
+                            XVal when XVal /= 0 -> { RegMap, stop_jmp_offset() };
+                            _ -> { RegMap, ?DEFAULT_JMP_OFFSET }
+                        end;
+                   ( _, _ ) -> unhandled
                 end,
-    
+
     run_commands( ZipperCmds, #{}, CmdRunner ).
+
+make_part2_cmd_runner( Pid ) ->
+    fun( { snd, Val }, RegMap ) ->
+            Counter = get_val( ?COUNTER_REG, RegMap ),
+            Pid ! get_val( Val, RegMap ),
+            UpdatedRegMap = update_regmap( ?COUNTER_REG, Counter + 1, RegMap ),
+            { UpdatedRegMap, ?DEFAULT_JMP_OFFSET };
+       ( { rcv, X }, RegMap ) ->
+            Val = receive V -> V
+                  after 1000 -> deadlock 
+                  end,
+
+            case Val of
+                deadlock -> { update_regmap( "snd", get_val( ?COUNTER_REG, RegMap ), RegMap ), stop_jmp_offset() };
+                _ -> { update_regmap( X, Val, RegMap ), ?DEFAULT_JMP_OFFSET }
+            end;
+       ( _, _ ) -> unhandled
+    end.
 
 solve2( Input ) ->
     ZipperCmds = parse_commands( Input ),
-    
-    CmdRunner = fun( { snd, _Val }, RegMap ) ->
-                        RegMap;
-                   ( { rcv, _X }, RegMap ) ->
-                        RegMap;
-                   ( _, _ ) -> unhandled
-                end,
-    
-    _P0 = spawn( fun() -> run_commands( ZipperCmds, #{ "p" => 0 }, CmdRunner ) end ),
-    _P1 = spawn( fun() -> run_commands( ZipperCmds, #{ "p" => 1 }, CmdRunner ) end ),
-    0.
+
+    Self = self(),
+    P0 = spawn( fun() -> 
+                        P1 = receive P -> P end,
+                        run_commands( ZipperCmds, #{ "p" => 0, ?COUNTER_REG => 0 }, make_part2_cmd_runner( P1 ) )
+                end ),
+    P1 = spawn( fun() ->
+                        P0 = receive P -> P end,
+                        Res = run_commands( ZipperCmds, #{ "p" => 1, ?COUNTER_REG => 0 }, make_part2_cmd_runner( P0 ) ),
+                        Self ! Res
+                end ),
+
+    P0 ! P1,
+    P1 ! P0,
+
+    Result = receive R -> R end,
+    Result.
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -117,4 +143,14 @@ solve1_test_() ->
              jgz a -1
              set a 1
              jgz a -2",
-    [ ?_assertEqual( 4, solve1(Input) ) ].
+    [ ?_assertEqual( 4, solve1( Input ) ) ].
+
+solve2_test_() ->
+    Input = "snd 1
+             snd 2
+             snd p
+             rcv a
+             rcv b
+             rcv c
+             rcv d",
+    [ ?_assertEqual(3 , solve2( Input ) ) ].
