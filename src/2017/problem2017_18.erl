@@ -1,12 +1,31 @@
 -module(problem2017_18).
 -export([solve1/1, solve2/1]).
 
+
+-type reg() :: string().
+-type num() :: integer().
+-type val() :: reg() | num().
+-type reg_map() :: #{ reg() := num() }.
+-type offset() :: integer().
+-type cmd_runner() :: fun( ( cmd(), reg_map() ) -> unhandled | { reg_map(), offset() } ).
+
+-type cmd() :: { set, reg(), val() } |
+               { add, reg(), val() } |
+               { mul, reg(), val() } |
+               { mod, reg(), val() } |
+               { snd, val() } |
+               { rcv, val() } |
+               { jgz, val(), val() }.
+-type cmds() :: zipper:zipper( cmd() ).
+
+-spec parse_val( string() ) -> val().
 parse_val( Value ) ->
     case string:to_integer( Value ) of
         { Int, [] } -> Int;
         _ -> Value
     end.
 
+-spec parse_command( list( string() ) ) -> cmd().
 parse_command( [ "set", Reg, Val ] ) ->
     { set, Reg, parse_val( Val ) };
 parse_command( [ "add", Reg, Val ] ) ->
@@ -22,49 +41,56 @@ parse_command( [ "rcv", Val ] ) ->
 parse_command( [ "jgz", Val1, Val2 ] ) ->
     { jgz, parse_val( Val1 ), parse_val( Val2 ) }.
 
+-spec parse_commands( string() ) -> cmds().
 parse_commands( Input ) ->
     Lines = string:tokens( Input, "\n" ),
     ParsedCmds = lists:map( fun( Line ) -> parse_command( string:tokens( Line, " " ) ) end, Lines ),
     zipper:from_list( ParsedCmds ).
 
-get_val( Val, _ ) when erlang:is_integer( Val ) ->
+-spec get_num( val(), reg_map() ) -> num().
+get_num( Val, _ ) when erlang:is_integer( Val ) ->
     Val;
-get_val( Reg, RegMap ) ->
-    case maps:find( Reg, RegMap ) of
-        {ok, Val} -> Val;
+get_num( Val, RegMap ) ->
+    case maps:find( Val, RegMap ) of
+        {ok, Num} -> Num;
         _ -> 0
     end.
 
+-spec stop_jmp_offset() -> offset().
 stop_jmp_offset() ->
     99999.
 
-update_regmap( Reg, Val, RegMap ) ->
-    RegMap#{ Reg => Val }.
+-spec update_regmap( reg(), num(), reg_map() ) -> reg_map().
+update_regmap( Reg, Num, RegMap ) ->
+    RegMap#{ Reg => Num }.
 
 -define(DEFAULT_JMP_OFFSET, 1).
 -define(RESULT_REG, "result").
 
+-spec run_common_command( cmd(), reg_map() ) -> { reg_map(), offset() }.
 run_common_command( { set, Reg, Val }, RegMap ) ->
-    { update_regmap( Reg, get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+    { update_regmap( Reg, get_num( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
 run_common_command( { add, Reg, Val }, RegMap ) ->
-    { update_regmap( Reg, get_val( Reg, RegMap ) + get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+    { update_regmap( Reg, get_num( Reg, RegMap ) + get_num( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
 run_common_command( { mul, Reg, Val}, RegMap ) ->
-    { update_regmap( Reg, get_val( Reg, RegMap ) * get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+    { update_regmap( Reg, get_num( Reg, RegMap ) * get_num( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
 run_common_command( { mod, Reg, Val}, RegMap ) ->
-    { update_regmap( Reg, get_val( Reg, RegMap ) rem get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+    { update_regmap( Reg, get_num( Reg, RegMap ) rem get_num( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
 run_common_command( { jgz, X, Y }, RegMap ) ->
-    Offset = case get_val( X, RegMap ) of
-                 XVal when XVal > 0 -> get_val( Y, RegMap );
+    Offset = case get_num( X, RegMap ) of
+                 XVal when XVal > 0 -> get_num( Y, RegMap );
                  _ -> ?DEFAULT_JMP_OFFSET
              end,
     { RegMap, Offset }.
 
+-spec run_command( cmd(), reg_map(), cmd_runner() ) -> { reg_map(), offset() }.
 run_command( Cmd, RegMap, CmdRunner ) ->
     case CmdRunner( Cmd, RegMap ) of
         unhandled -> run_common_command( Cmd, RegMap );
         Res -> Res
     end.
 
+-spec run_commands( cmds(), reg_map(), cmd_runner() ) -> num().
 run_commands( ZipperCmds, RegMap, CmdRunner ) ->
     Cmd = zipper:get( ZipperCmds ),
     { UpdatedRegMap, JumpOffset } = run_command( Cmd, RegMap, CmdRunner ),
@@ -73,17 +99,18 @@ run_commands( ZipperCmds, RegMap, CmdRunner ) ->
     IsLastCmd = ( NextCmdNum > zipper:len( ZipperCmds ) ) or ( NextCmdNum < 1 ),
 
     case IsLastCmd of
-        true -> get_val( ?RESULT_REG, UpdatedRegMap );
+        true -> get_num( ?RESULT_REG, UpdatedRegMap );
         false -> run_commands( zipper:next_n( JumpOffset, ZipperCmds ), UpdatedRegMap, CmdRunner )
     end.
 
+-spec solve1( string() ) -> num().
 solve1( Input ) ->
     ZipperCmds = parse_commands( Input ),
 
     CmdRunner = fun( { snd, Val }, RegMap ) ->
-                        { update_regmap( ?RESULT_REG, get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+                        { update_regmap( ?RESULT_REG, get_num( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
                    ( { rcv, X }, RegMap ) ->
-                        case get_val( X, RegMap ) of
+                        case get_num( X, RegMap ) of
                             XVal when XVal /= 0 -> { RegMap, stop_jmp_offset() };
                             _ -> { RegMap, ?DEFAULT_JMP_OFFSET }
                         end;
@@ -92,10 +119,11 @@ solve1( Input ) ->
 
     run_commands( ZipperCmds, #{}, CmdRunner ).
 
+-spec make_part2_cmd_runner( pid() ) -> cmd_runner().
 make_part2_cmd_runner( Pid ) ->
     fun( { snd, Val }, RegMap ) ->
-            SndCounter = get_val( ?RESULT_REG, RegMap ),
-            Pid ! get_val( Val, RegMap ),
+            SndCounter = get_num( ?RESULT_REG, RegMap ),
+            Pid ! get_num( Val, RegMap ),
             UpdatedRegMap = update_regmap( ?RESULT_REG, SndCounter + 1, RegMap ),
             { UpdatedRegMap, ?DEFAULT_JMP_OFFSET };
        ( { rcv, X }, RegMap ) ->
@@ -110,6 +138,7 @@ make_part2_cmd_runner( Pid ) ->
        ( _, _ ) -> unhandled
     end.
 
+-spec solve2( string() ) -> num().
 solve2( Input ) ->
     ZipperCmds = parse_commands( Input ),
 
