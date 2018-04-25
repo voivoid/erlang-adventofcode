@@ -42,7 +42,7 @@ update_regmap( Reg, Val, RegMap ) ->
     RegMap#{ Reg => Val }.
 
 -define(DEFAULT_JMP_OFFSET, 1).
--define(COUNTER_REG, "counter").
+-define(RESULT_REG, "result").
 
 run_common_command( { set, Reg, Val }, RegMap ) ->
     { update_regmap( Reg, get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
@@ -73,7 +73,7 @@ run_commands( ZipperCmds, RegMap, CmdRunner ) ->
     IsLastCmd = ( NextCmdNum > zipper:len( ZipperCmds ) ) or ( NextCmdNum < 1 ),
 
     case IsLastCmd of
-        true -> get_val( "snd", UpdatedRegMap );
+        true -> get_val( ?RESULT_REG, UpdatedRegMap );
         false -> run_commands( zipper:next_n( JumpOffset, ZipperCmds ), UpdatedRegMap, CmdRunner )
     end.
 
@@ -81,7 +81,7 @@ solve1( Input ) ->
     ZipperCmds = parse_commands( Input ),
 
     CmdRunner = fun( { snd, Val }, RegMap ) ->
-                        { update_regmap( "snd", get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
+                        { update_regmap( ?RESULT_REG, get_val( Val, RegMap ), RegMap ), ?DEFAULT_JMP_OFFSET };
                    ( { rcv, X }, RegMap ) ->
                         case get_val( X, RegMap ) of
                             XVal when XVal /= 0 -> { RegMap, stop_jmp_offset() };
@@ -94,9 +94,9 @@ solve1( Input ) ->
 
 make_part2_cmd_runner( Pid ) ->
     fun( { snd, Val }, RegMap ) ->
-            Counter = get_val( ?COUNTER_REG, RegMap ),
+            SndCounter = get_val( ?RESULT_REG, RegMap ),
             Pid ! get_val( Val, RegMap ),
-            UpdatedRegMap = update_regmap( ?COUNTER_REG, Counter + 1, RegMap ),
+            UpdatedRegMap = update_regmap( ?RESULT_REG, SndCounter + 1, RegMap ),
             { UpdatedRegMap, ?DEFAULT_JMP_OFFSET };
        ( { rcv, X }, RegMap ) ->
             Val = receive V -> V
@@ -104,7 +104,7 @@ make_part2_cmd_runner( Pid ) ->
                   end,
 
             case Val of
-                deadlock -> { update_regmap( "snd", get_val( ?COUNTER_REG, RegMap ), RegMap ), stop_jmp_offset() };
+                deadlock -> { RegMap, stop_jmp_offset() };
                 _ -> { update_regmap( X, Val, RegMap ), ?DEFAULT_JMP_OFFSET }
             end;
        ( _, _ ) -> unhandled
@@ -116,11 +116,11 @@ solve2( Input ) ->
     Self = self(),
     P0 = spawn( fun() -> 
                         P1 = receive P -> P end,
-                        run_commands( ZipperCmds, #{ "p" => 0, ?COUNTER_REG => 0 }, make_part2_cmd_runner( P1 ) )
+                        run_commands( ZipperCmds, #{ "p" => 0 }, make_part2_cmd_runner( P1 ) )
                 end ),
     P1 = spawn( fun() ->
                         P0 = receive P -> P end,
-                        Res = run_commands( ZipperCmds, #{ "p" => 1, ?COUNTER_REG => 0 }, make_part2_cmd_runner( P0 ) ),
+                        Res = run_commands( ZipperCmds, #{ "p" => 1 }, make_part2_cmd_runner( P0 ) ),
                         Self ! Res
                 end ),
 
