@@ -2,7 +2,11 @@
 -export([solve1/1, solve2/1]).
 
 -type instruction() :: $U | $L | $R | $D.
+-type instructions() :: list( instruction() ).
 -type coord() :: { non_neg_integer(), non_neg_integer() }.
+-type button() :: char().
+-type buttons_map() :: #{ coord() := button() }.
+-type buttons() :: list( button() ).
 
 -spec next_keypad_coord( instruction(), coord() ) -> coord().
 next_keypad_coord( $U, { X, Y } ) -> { X, Y - 1 };
@@ -10,7 +14,7 @@ next_keypad_coord( $L, { X, Y } ) -> { X - 1, Y };
 next_keypad_coord( $R, { X, Y } ) -> { X + 1, Y };
 next_keypad_coord( $D, { X, Y } ) -> { X, Y + 1 }.
     
-
+-spec next_button_coord( instructions(), coord(), buttons_map() ) -> coord().
 next_button_coord( Line, StartCoord, ButtonsMap ) ->
     lists:foldl( fun ( Cmd, Coord ) ->
                          NextCoord = next_keypad_coord( Cmd, Coord ),
@@ -23,6 +27,7 @@ next_button_coord( Line, StartCoord, ButtonsMap ) ->
                  Line ).
     
 
+-spec solve( string(), buttons_map(), coord() ) -> buttons().
 solve( Input, ButtonsMap, StartCoord ) ->
     Lines = string:tokens( Input, "\n " ),
     { _, ResultButtons } =
@@ -35,13 +40,14 @@ solve( Input, ButtonsMap, StartCoord ) ->
                      Lines ),
     lists:reverse( ResultButtons ).
     
-
+-spec solve1( string() ) -> buttons().
 solve1( Input ) ->
     ButtonsMap = #{ { 1, 1 } => $1, { 2, 1 } => $2, { 3, 1 } => $3,
                     { 1, 2 } => $4, { 2, 2 } => $5, { 3, 2 } => $6,
                     { 1, 3 } => $7, { 2, 3 } => $8, { 3, 3 } => $9 },
     solve( Input, ButtonsMap, { 2, 2 } ).
 
+-spec solve2( string() ) -> buttons().
 solve2( Input ) ->
     ButtonsMap =
         #{                                 { 3, 1 } => $1,
