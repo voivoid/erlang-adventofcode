@@ -2,6 +2,7 @@
 -export([solve1/1, solve2/1]).
 
 -type stepping() :: non_neg_integer().
+-type pos() :: non_neg_integer().
 -type value() :: non_neg_integer().
 -type values() :: zipper:zipper( value() ).
 -type counter() :: non_neg_integer().
@@ -19,6 +20,7 @@ solve1( Input ) ->
     Zipper = run_steps( Stepping, zipper:from_list( [ 0 ] ), 2018, 1 ),
     zipper:get( zipper:next( Zipper ) ).
 
+-spec count_steps( stepping(), pos(), counter(), counter(), value() ) -> value().
 count_steps( _, _, Counter, Counter, LastValAfter0 ) ->
     LastValAfter0;
 count_steps( Stepping, Pos, StopN, Counter, LastValAfter0 ) ->
@@ -29,7 +31,8 @@ count_steps( Stepping, Pos, StopN, Counter, LastValAfter0 ) ->
             _ -> LastValAfter0
         end,
     count_steps( Stepping, NewPos, StopN, Counter + 1, NewLastValAfter0 ).
-    
+
+-spec solve2( string() ) -> value().
 solve2( Input ) ->
     Stepping = erlang:list_to_integer( Input ),
     count_steps( Stepping, 0, 50000000, 1, 0 ).
