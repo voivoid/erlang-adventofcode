@@ -6,7 +6,7 @@ Advent of Code ( https://adventofcode.com ) 2015-2017 solutions
 Day | 2015 | 2016 | 2017
 --- | ---- | ---- | ----
 01  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_01.erl)     | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2016/problem2016_01.erl)     | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_01.erl) 
-02  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_02.erl)     |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_02.erl) 
+02  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_02.erl)     | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2016/problem2016_02.erl)     |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_02.erl) 
 03  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_03.erl)     |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_03.erl) 
 04  |      |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_04.erl) 
 05  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_05.erl)     |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_05.erl) 
