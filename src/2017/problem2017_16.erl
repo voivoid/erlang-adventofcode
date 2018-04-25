@@ -5,7 +5,7 @@
 -type prog() :: char().
 -type progs() :: list( prog() ).
 -type move() :: { s, non_neg_integer() } | { x, index(), index() } | { p, prog(), prog() }.
--type moves() :: list( string() ).
+-type moves() :: list( move() ).
 
 
 -spec do_move( move(), progs() ) -> progs().

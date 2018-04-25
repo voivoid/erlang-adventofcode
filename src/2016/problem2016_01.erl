@@ -1,14 +1,16 @@
 -module(problem2016_01).
--export([solve1/1, solve2/1, intersects/2]).
+-export([solve1/1, solve2/1]).
 
 -type turn() :: left | right.
 -type dir() :: north | west | south | east.
 -type coord() :: { integer(), integer() }.
 -type pos() :: { coord(), dir() }.
--type instruction() :: { turn(), non_neg_integer() }.
+-type steps() :: non_neg_integer().
+-type steps_list() :: list( coord() ).
+-type instruction() :: { turn(), steps() }.
 
--type move() :: { coord(), coord() }.
--type moves() :: list( move() ).
+-type line() :: { coord(), coord() }.
+-type lines() :: list( line() ).
 
 -spec parse_instruction( [ char() ] ) -> instruction().
 parse_instruction( [ $L | Steps ] ) ->
@@ -26,16 +28,20 @@ do_turn( right, west ) -> north;
 do_turn( right, south ) -> west;
 do_turn( right, east ) -> south.
 
--spec do_steps( dir(), coord(), non_neg_integer() ) -> coord().
-do_steps( north, { X, Y }, Steps ) -> { X, Y - Steps };
-do_steps( east,  { X, Y }, Steps ) -> { X + Steps, Y };
-do_steps( south, { X, Y }, Steps ) -> { X, Y + Steps };
-do_steps( west,  { X, Y }, Steps ) -> { X - Steps, Y }.
+-spec do_steps( pos(), steps() ) -> coord().
+do_steps( { { X, Y }, north }, Steps ) -> { X, Y - Steps };
+do_steps( { { X, Y }, east }, Steps ) -> { X + Steps, Y };
+do_steps( { { X, Y }, south },  Steps ) -> { X, Y + Steps };
+do_steps( { { X, Y }, west }, Steps ) -> { X - Steps, Y }.
+
+-spec get_steps_list( pos(), steps() ) -> steps_list().
+get_steps_list( Pos, Steps ) ->
+    lists:map( fun( S ) -> do_steps( Pos, S ) end, lists:seq( 1, Steps ) ).
 
 -spec get_next_pos( instruction(), pos() ) -> pos().
-get_next_pos( { Turn, Steps }, { { X, Y }, Face } ) ->
+get_next_pos( { Turn, Steps }, { Pos, Face } ) ->
     NewFace = do_turn( Turn, Face ),
-    { NewX, NewY } = do_steps( NewFace, { X, Y }, Steps ),
+    { NewX, NewY } = do_steps( { Pos, NewFace }, Steps ),
     { { NewX, NewY }, NewFace }.
 
 parse_instructions( Input ) ->
@@ -44,46 +50,53 @@ parse_instructions( Input ) ->
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     Instructions = parse_instructions( Input ),
+    StartPos = { { 0, 0 }, north },
     { { X, Y }, _ } = lists:foldl( fun get_next_pos/2,
-                                   { { 0, 0 }, north },
+                                   StartPos,
                                    Instructions ),
     abs( X ) + abs( Y ).
 
-
-
--spec intersects( move(), move() ) -> no | coord().
-intersects( M1, M2 ) ->
-    case intersects_impl( M1, M2 ) of
-        no -> intersects_impl( M2, M1 );
-        Intersection -> Intersection
-    end.
-
-intersects_impl( { { X1, Y }, { X2, Y } }, { { X, Y1 }, { X, Y2 } } ) when ( X >= X1 ) and ( X =< X2 ) and ( Y >= Y1 ) and ( Y =< Y2 ) -> { X, Y };
-intersects_impl( _, _ ) -> no.
-
--spec do_instructions( instruction(), pos(), moves() ) -> pos().
-do_instructions( [ Instruction | Rest ], CurrentPos, PrevMoves ) ->
-    NextPos = get_next_pos( Instruction, CurrentPos ),
-    { { P1, _ }, { P2, _ } } = { CurrentPos, NextPos },
-    NewMove = { P1, P2 },
-    io:format(user, "~w~n", [ { NewMove } ] ),
+belongs( X, A, B ) ->
+    ( X >= min( A, B ) ) andalso ( X =< max( A, B ) ).
     
-    case listz:find( fun( Move ) -> intersects( Move, NewMove ) /= no end, PrevMoves ) of
+-spec intersects( coord(), line() ) -> boolean().
+intersects( { X, Y }, { { X1, Y1 }, { X2, Y2 } } ) ->
+    belongs( X, X1, X2 ) andalso belongs( Y, Y1, Y2 ).
+
+-spec find_if_already_visited( steps_list(), lines() ) -> coord() | not_found.
+find_if_already_visited( StepsList, PrevLines ) ->
+    listz:find( fun( Step ) ->
+                        lists:any( fun( Line ) -> 
+                                           intersects( Step, Line )
+                                   end, PrevLines)
+                end,
+                StepsList ).
+
+-spec find_first_intersection( list( instruction() ), pos(), lines() ) -> coord().
+find_first_intersection( [ { _, 0 } = Instruction | Rest ], CurrentPos, PrevLines ) ->
+    find_first_intersection( Rest, get_next_pos( Instruction, CurrentPos ), PrevLines );
+find_first_intersection( [ { Turn, Steps } | Rest ], { Pos, Face }, PrevLines ) ->
+    NewFace = do_turn( Turn, Face ),
+    StepsList = get_steps_list( { Pos, NewFace }, Steps ),
+
+    case find_if_already_visited( StepsList, PrevLines ) of
         not_found -> 
-            NewMoves = [ NewMove | PrevMoves ],
-            do_instructions( Rest, NextPos, NewMoves );
-        InterMove -> intersects( InterMove, NewMove )
+            FirstStep = lists:nth( 1, StepsList ),
+            LastStep = lists:last( StepsList ),
+            NextPos = { LastStep, NewFace },
+            NewLine = { FirstStep, LastStep } ,
+            find_first_intersection( Rest, NextPos, [ NewLine | PrevLines ] );
+        VisitedPos -> VisitedPos
     end.
+             
     
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     Instructions = parse_instructions( Input ),
-    { X, Y } = do_instructions( Instructions, { { 0, 0 }, north }, [] ),
-    io:format(user, "~w", [ { X, Y } ] ),
+    { X, Y } = find_first_intersection( Instructions, { { 0, 0 }, north }, [ { { 0, 0 }, { 0, 0 } } ] ),
     abs( X ) + abs( Y ).
 
     
-
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -95,3 +108,18 @@ solve1_test_() ->
 
 solve2_test_() ->
     [ ?_assertEqual( 4, solve2( "R8, R4, R4, R8" ) ) ].
+
+aux_test_() ->
+    [ ?_assert( belongs( 0, -1, 1 ) ),
+      ?_assert( belongs( 2, 0, 2 ) ),
+      ?_assert( belongs( 2, 2, 0 ) ),
+      ?_assertNot( belongs( 3, 0, 2 ) ),
+      ?_assertNot( belongs( 3, 2, 0 ) ),
+      ?_assert( intersects( { 2, 2 }, { { 0, 2 }, { 4, 2 } } ) ),
+      ?_assert( intersects( { 2, 2 }, { { 2, 0 }, { 2, 4 } } ) ),
+      ?_assert( intersects( { 0, 2 }, { { 0, 2 }, { 4, 2 } } ) ),
+      ?_assert( intersects( { 4, 2 }, { { 0, 2 }, { 4, 2 } } ) ),
+      ?_assertNot(intersects( { 3, 3 }, { { 0, 2 }, { 4, 2 } } ) ),
+      ?_assertEqual( [ { 2, 1 }, { 3, 1 }, { 4, 1 } ], get_steps_list( { { 1, 1 }, east }, 3 ) ),
+      ?_assertEqual( { 1, 0 }, find_if_already_visited( [ { 0, 0 }, { 1, 0 }, { 2, 0 } ], [ { { 5, 5 }, { 5, 10 } }, { { 1, -2 }, { 1, 2 } } ] ) )
+    ].
