@@ -8,3 +8,6 @@ problem_01_2_test_() -> utils:make_test( "2016_01", fun problem2016_01:solve2/1,
 
 problem_02_1_test_() -> utils:make_test( "2016_02", fun problem2016_02:solve1/1, "78293" ).
 problem_02_2_test_() -> utils:make_test( "2016_02", fun problem2016_02:solve2/1, "AC8C8" ).
+
+problem_03_1_test_() -> utils:make_test( "2016_03", fun problem2016_03:solve1/1, 983 ).
+problem_03_2_test_() -> utils:make_test( "2016_03", fun problem2016_03:solve2/1, 1836 ).
