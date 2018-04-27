@@ -91,7 +91,7 @@ pos_test_() ->
 is_empty_test_() ->
     [
      ?_assert( zipper:is_empty( zipper:from_list( [] ) ) ),
-     ?_assertNot( zipper:is_empty( zipper:from_list( [ 1 ] ) ) ) 
+     ?_assertNot( zipper:is_empty( zipper:from_list( [ 1 ] ) ) )
     ].
 
 len_test_() ->

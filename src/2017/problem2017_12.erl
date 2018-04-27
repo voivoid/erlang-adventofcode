@@ -31,7 +31,7 @@ count_connections_with( ID, DataMap, Counted ) ->
     Counted1 = sets:add_element( ID, Counted ),
     UniqueConns = sets:subtract( Connections, Counted1 ),
 
-    sets:fold( fun( UniqueConnID, CountedAcc ) -> 
+    sets:fold( fun( UniqueConnID, CountedAcc ) ->
                        count_connections_with( UniqueConnID, DataMap, CountedAcc ) end,
                Counted1,
                UniqueConns ).
@@ -46,18 +46,18 @@ count_connection_groups( DataMap ) ->
             1 + count_connection_groups( FilteredMap )
     end.
 
-    
+
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     DataMap = parse_input( Input ),
-    sets:size( count_connections_with( 0, DataMap, sets:new() ) ).                                            
+    sets:size( count_connections_with( 0, DataMap, sets:new() ) ).
 
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     DataMap = parse_input( Input ),
     count_connection_groups( DataMap ).
-    
+
 
 -include_lib("eunit/include/eunit.hrl").
 

@@ -22,7 +22,7 @@ calc_severity( { Depth, Range } ) ->
     if IsZeroPos -> Depth * Range;
        not IsZeroPos -> 0
     end.
-    
+
 -spec calc_total_severity( layers() ) -> severity().
 calc_total_severity( Layers ) ->
     Severities = lists:map( fun calc_severity/1, Layers ),
@@ -39,12 +39,12 @@ calc_min_delay( Delay, Layers ) ->
     if IsGoodDelay -> Delay;
        not IsGoodDelay -> calc_min_delay( Delay + 1, Layers )
     end.
-    
+
 -spec solve1( string() ) -> severity().
 solve1( Input ) ->
     Layers = parse_layers( Input ),
     calc_total_severity( Layers ).
-    
+
 -spec solve2( string() ) -> delay().
 solve2( Input ) ->
     Layers = parse_layers( Input ),

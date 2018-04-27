@@ -30,7 +30,7 @@ solve1( Input ) ->
 
 -spec solve2( string() ) -> non_neg_integer().
 solve2(Input) ->
-    CalcNewOffset = fun( Offset ) -> 
+    CalcNewOffset = fun( Offset ) ->
                             if Offset >= 3 -> Offset - 1;
                                Offset < 3  -> Offset + 1
                             end

@@ -14,8 +14,8 @@ solve1( Input ) ->
     Lines = string:tokens( Input, "\n" ),
     Sum = lists:foldl( fun( Line, Sum ) -> R = calc_area( Line ), R + Sum end, 0, Lines ),
     Sum.
-                            
-    
+
+
 -spec calc_ribbon( string() ) -> integer().
 calc_ribbon( Input ) ->
     Dims = lists:map( fun erlang:list_to_integer/1, string:tokens( Input, "x" ) ),
@@ -30,8 +30,8 @@ solve2( Input ) ->
     Lines = string:tokens( Input, "\n" ),
     Sum = lists:foldl( fun( Line, Sum ) -> R = calc_ribbon( Line ), R + Sum end, 0, Lines ),
     Sum.
-                            
-    
+
+
 
 
 -include_lib("eunit/include/eunit.hrl").

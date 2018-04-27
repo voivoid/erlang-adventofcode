@@ -44,13 +44,13 @@ is_good_line1( Input ) ->
 -spec is_good_line2( string() ) -> boolean().
 is_good_line2( Input ) ->
     has_pair_of_letters( Input ) andalso has_repeating_letter( Input ).
-    
+
 -spec solve( string(), fun( ( string() ) -> boolean() ) ) -> non_neg_integer().
 solve( Input, LineChecker ) ->
     Lines = string:tokens( Input, "\n" ),
     GoodLines = lists:filter( LineChecker, Lines ),
     erlang:length( GoodLines ).
-    
+
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
@@ -74,7 +74,7 @@ solve1_test_() ->
       ?_assertEqual( 0, solve1( "dvszwmarrgswjxmb" ) ) ].
 
 solve2_test_() ->
-    [ ?_assertEqual( 1, solve2( "qjhvhtzxzqqjkmpb" ) ),      
+    [ ?_assertEqual( 1, solve2( "qjhvhtzxzqqjkmpb" ) ),
       ?_assertEqual( 1, solve2( "xxyxx" ) ),
       ?_assertEqual( 0, solve2( "uurcxstgmygtbstg" ) ),
       ?_assertEqual( 0, solve2( "ieodomkazucvgmuy" ) ) ].

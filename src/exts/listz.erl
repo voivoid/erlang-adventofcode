@@ -17,7 +17,7 @@ shiftl( N, L ) ->  shiftl_impl( N rem erlang:length( L ) , L, [] ).
 -spec shiftl_impl( non_neg_integer(), list( T ), list( T ) ) -> list( T ).
 shiftl_impl( 0, XS, Acc ) -> XS ++ lists:reverse( Acc );
 shiftl_impl( N, [ X | XS ], Acc ) -> shiftl_impl( N - 1, XS, [ X | Acc ] ).
-    
+
 
 -spec shiftr( non_neg_integer(), list( T ) ) -> list( T ).
 shiftr( N, L ) -> shiftl( erlang:length( L ) - N, L ).

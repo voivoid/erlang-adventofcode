@@ -29,7 +29,7 @@ prev_n( N, Zipper ) when N < 0 -> next_n( erlang:abs( N ), Zipper ).
 -spec next_n( integer(), zipper( T ) ) -> zipper( T ).
 next_n( N, Zipper ) when N >= 0 -> algos:iterate( fun next/1, Zipper, N );
 next_n( N, Zipper ) when N < 0 -> prev_n( erlang:abs( N ), Zipper ).
-    
+
 
 -spec get( zipper( T ) ) -> T.
 get( { _, [ Current | _ ] } ) ->

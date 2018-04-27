@@ -23,14 +23,14 @@ parse_input_line( Line ) ->
 -spec make_tower_maps( string() ) -> { parent_to_children_map(), child_to_parent_map(), tower_to_weight_map() }.
 make_tower_maps( Input ) ->
     TowerStrs = string:tokens( Input, "\n" ),
-    lists:foldl( 
+    lists:foldl(
       fun ( Line, { PtC, CtP, Weights } ) ->
               { Parent, { Weight, Children } } = parse_input_line( Line ),
 
               {
                 PtC#{ Parent => Children },
                 lists:foldl( fun( Child, ChildrenAcc ) -> ChildrenAcc#{ Child => Parent } end, CtP, Children ),
-                Weights#{ Parent => Weight } 
+                Weights#{ Parent => Weight }
               }
       end,
       { #{}, #{}, #{} },

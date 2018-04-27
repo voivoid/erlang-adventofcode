@@ -48,7 +48,7 @@ run_instruction( { Op1Reg, CmdOp, Op2Val, Reg, CondOp, CondVal }, { Registers, _
     case check_cond( Reg, CondOp, CondVal, Registers ) of
         true -> run_command( Op1Reg, CmdOp, Op2Val, RegistersState );
         false -> RegistersState
-    end.    
+    end.
 
 
 -spec solve( string() ) -> { reg_map(), reg_val() }.

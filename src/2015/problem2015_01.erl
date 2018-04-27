@@ -9,7 +9,7 @@ solve1( Input ) ->
                                     end end,
                  0, Input ).
 
--spec iter( integer(), [ char() ], integer() ) -> non_neg_integer().                         
+-spec iter( integer(), [ char() ], integer() ) -> non_neg_integer().
 iter( -1, _, Counter ) ->
     Counter;
 iter( Floor, [ $( | Input ], Counter ) ->

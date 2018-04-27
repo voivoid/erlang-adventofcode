@@ -65,7 +65,7 @@ get_neighbours( Coord, BitSet, Visited ) ->
     VisitedWithCoord = sets:add_element( Coord, Visited ),
     case HasBit of
         false -> { [], VisitedWithCoord } ;
-        _ -> 
+        _ ->
             lists:foldl( fun( NeighbourCoord, { NeighboursAcc, VisitedAcc } ) ->
                                     { NewNeighbours, NewVisited } = get_neighbours( NeighbourCoord, BitSet, VisitedAcc ),
                                     { lists:merge( NewNeighbours, NeighboursAcc ), sets:union( NewVisited, VisitedAcc ) }

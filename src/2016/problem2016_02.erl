@@ -13,7 +13,7 @@ next_keypad_coord( $U, { X, Y } ) -> { X, Y - 1 };
 next_keypad_coord( $L, { X, Y } ) -> { X - 1, Y };
 next_keypad_coord( $R, { X, Y } ) -> { X + 1, Y };
 next_keypad_coord( $D, { X, Y } ) -> { X, Y + 1 }.
-    
+
 -spec next_button_coord( instructions(), coord(), buttons_map() ) -> coord().
 next_button_coord( Line, StartCoord, ButtonsMap ) ->
     lists:foldl( fun ( Cmd, Coord ) ->
@@ -21,11 +21,11 @@ next_button_coord( Line, StartCoord, ButtonsMap ) ->
                          case maps:is_key( NextCoord , ButtonsMap ) of
                              true -> NextCoord;
                              false -> Coord
-                         end                             
+                         end
                  end,
                  StartCoord,
                  Line ).
-    
+
 
 -spec solve( string(), buttons_map(), coord() ) -> buttons().
 solve( Input, ButtonsMap, StartCoord ) ->
@@ -39,7 +39,7 @@ solve( Input, ButtonsMap, StartCoord ) ->
                      { StartCoord, [] },
                      Lines ),
     lists:reverse( ResultButtons ).
-    
+
 -spec solve1( string() ) -> buttons().
 solve1( Input ) ->
     ButtonsMap = #{ { 1, 1 } => $1, { 2, 1 } => $2, { 3, 1 } => $3,

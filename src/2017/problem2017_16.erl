@@ -21,7 +21,7 @@ do_move( { p, A, B }, Progs ) ->
                   ( C ) -> C
                end,
                Progs ).
-                       
+
 -spec run_dance( moves(), progs()  ) -> progs().
 run_dance( Moves, Progs ) ->
     lists:foldl( fun do_move/2,
@@ -58,14 +58,14 @@ run_dances( _, Progs, _, Counter, Counter ) -> Progs;
 run_dances( Moves, Progs, Progs, Counter, DancesNum ) when Counter > 0 ->
     NextCounter = DancesNum - ( DancesNum rem Counter ),
     run_dances( Moves, Progs, [], NextCounter, DancesNum );
-run_dances( Moves, Progs, Init, Counter, DancesNum ) ->    
+run_dances( Moves, Progs, Init, Counter, DancesNum ) ->
     run_dances( Moves, run_dance( Moves, Progs ), Init, Counter + 1, DancesNum ).
 
 -spec solve2( string() ) -> string().
 solve2( Input ) ->
     run_dances( parse_moves( Input ), get_progs(), get_progs(), 0, 1000000000 ).
-    
-    
+
+
 
 -include_lib("eunit/include/eunit.hrl").
 

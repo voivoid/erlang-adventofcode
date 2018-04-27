@@ -6,7 +6,7 @@ calc( Offset, OddSqrt ) ->
     Rem = Offset rem OddSqrt,
     HalfSqrt = OddSqrt div 2,
     HalfSqrt + erlang:abs( Rem + 1 - HalfSqrt ).
-    
+
 -spec calc( integer() ) -> integer().
 calc( 1 ) -> 0;
 calc( N ) ->

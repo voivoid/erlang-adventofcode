@@ -41,7 +41,7 @@ solve1( Input ) ->
     Banks = get_banks( Input ),
     { Counter, _ } = run_reallocations( Banks, sets:new(), 0 ),
     Counter.
-    
+
 
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->

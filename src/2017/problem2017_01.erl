@@ -7,7 +7,7 @@ solve( Input, ShiftedInput ) ->
             ( _, _ ) -> 0
         end,
     lists:sum( lists:zipwith( F, Input, ShiftedInput ) ).
-    
+
 -spec solve1( nonempty_string() ) -> integer().
 solve1( Input ) ->
     solve( Input, tl( Input ) ++ [ hd( Input ) ] ).

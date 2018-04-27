@@ -128,7 +128,7 @@ make_part2_cmd_runner( Pid ) ->
             { UpdatedRegMap, ?DEFAULT_JMP_OFFSET };
        ( { rcv, X }, RegMap ) ->
             Val = receive V -> V
-                  after 1000 -> deadlock 
+                  after 1000 -> deadlock
                   end,
 
             case Val of
@@ -143,7 +143,7 @@ solve2( Input ) ->
     ZipperCmds = parse_commands( Input ),
 
     Self = self(),
-    P0 = spawn( fun() -> 
+    P0 = spawn( fun() ->
                         P1 = receive P -> P end,
                         run_commands( ZipperCmds, #{ "p" => 0 }, make_part2_cmd_runner( P1 ) )
                 end ),

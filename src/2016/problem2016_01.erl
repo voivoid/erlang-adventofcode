@@ -58,7 +58,7 @@ solve1( Input ) ->
 
 belongs( X, A, B ) ->
     ( X >= min( A, B ) ) andalso ( X =< max( A, B ) ).
-    
+
 -spec intersects( coord(), line() ) -> boolean().
 intersects( { X, Y }, { { X1, Y1 }, { X2, Y2 } } ) ->
     belongs( X, X1, X2 ) andalso belongs( Y, Y1, Y2 ).
@@ -66,7 +66,7 @@ intersects( { X, Y }, { { X1, Y1 }, { X2, Y2 } } ) ->
 -spec find_if_already_visited( steps_list(), lines() ) -> coord() | not_found.
 find_if_already_visited( StepsList, PrevLines ) ->
     listz:find( fun( Step ) ->
-                        lists:any( fun( Line ) -> 
+                        lists:any( fun( Line ) ->
                                            intersects( Step, Line )
                                    end, PrevLines)
                 end,
@@ -80,7 +80,7 @@ find_first_intersection( [ { Turn, Steps } | Rest ], { Pos, Face }, PrevLines ) 
     StepsList = get_steps_list( { Pos, NewFace }, Steps ),
 
     case find_if_already_visited( StepsList, PrevLines ) of
-        not_found -> 
+        not_found ->
             FirstStep = lists:nth( 1, StepsList ),
             LastStep = lists:last( StepsList ),
             NextPos = { LastStep, NewFace },
@@ -88,15 +88,15 @@ find_first_intersection( [ { Turn, Steps } | Rest ], { Pos, Face }, PrevLines ) 
             find_first_intersection( Rest, NextPos, [ NewLine | PrevLines ] );
         VisitedPos -> VisitedPos
     end.
-             
-    
+
+
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     Instructions = parse_instructions( Input ),
     { X, Y } = find_first_intersection( Instructions, { { 0, 0 }, north }, [ { { 0, 0 }, { 0, 0 } } ] ),
     abs( X ) + abs( Y ).
 
-    
+
 
 -include_lib("eunit/include/eunit.hrl").
 

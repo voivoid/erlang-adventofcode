@@ -26,7 +26,7 @@ calc_next_pos( Step, { Pos, Max } ) ->
     NewPos = make_step( Step, Pos ),
     NewMax = max( Max, calc_min_distance( NewPos ) ),
     { NewPos, NewMax }.
-    
+
 
 -spec solve( string() ) -> state().
 solve( Input ) ->

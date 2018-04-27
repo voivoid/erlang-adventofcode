@@ -72,6 +72,6 @@ solve1_test_() ->
 
 solve2_test_() ->
     [ ?_assertEqual( "a2582a3a0e66e6e86e3812dcb672a272", solve2( "" ) ),
-      ?_assertEqual( "33efeb34ea91902bb2f59c9920caa6cd", solve2( "AoC 2017" ) ), 
+      ?_assertEqual( "33efeb34ea91902bb2f59c9920caa6cd", solve2( "AoC 2017" ) ),
       ?_assertEqual( "3efbe78a8d82f29979031a4aa0b16a9d", solve2( "1,2,3" ) ),
       ?_assertEqual( "63960835bcdc130f0b66d7ff4f6a5a8e", solve2( "1,2,4" ) ) ].

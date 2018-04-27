@@ -15,14 +15,14 @@ solve1( Input ) ->
     CalcRowDiff = fun( Ints ) ->
                           lists:max( Ints ) - lists:min( Ints )
                   end,
-    solve( Input, CalcRowDiff ). 
+    solve( Input, CalcRowDiff ).
 
 
 
 -spec solve2( string() ) -> integer().
 solve2( Input ) ->
     CalcRowDiff = fun( Ints ) ->
-                          lists:sum( [ M div N || N <- Ints, M <- lists:delete( N, Ints ), M rem N == 0 ] ) 
+                          lists:sum( [ M div N || N <- Ints, M <- lists:delete( N, Ints ), M rem N == 0 ] )
                   end,
     solve( Input, CalcRowDiff ).
 

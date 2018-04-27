@@ -32,7 +32,7 @@ match_lower_16_bits( A, B ) ->
         true -> 1;
         false -> 0
     end.
-    
+
 -spec count_matches_1( non_neg_integer(), non_neg_integer(), non_neg_integer(), non_neg_integer() ) -> non_neg_integer().
 count_matches_1( _, _, 0, Matches ) -> Matches;
 count_matches_1( A, B, PairsNum, Matches ) ->

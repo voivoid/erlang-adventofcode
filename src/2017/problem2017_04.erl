@@ -7,7 +7,7 @@
 solve(Input, IsValidLine) ->
     Lines = string:tokens( Input, "\n" ),
     Tokens = lists:map( fun( Line ) -> string:tokens( Line, " " ) end, Lines ),
-    length( lists:filter( IsValidLine, Tokens ) ).    
+    length( lists:filter( IsValidLine, Tokens ) ).
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1(Input) ->
@@ -23,7 +23,7 @@ solve2(Input) ->
         Sorted = lists:map( fun lists:sort/1, Tokens ),
         length( Sorted ) == length( lists:usort( Sorted ) ) end,
     solve( Input, IsValidLine ).
-                           
+
 
 
 -include_lib("eunit/include/eunit.hrl").
