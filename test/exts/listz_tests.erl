@@ -21,3 +21,8 @@ shiftr_test_() ->
 find_test_() ->
     [ ?_assertEqual( 2, listz:find( fun( X ) -> X == 2 end, [ 1, 2, 3 ] ) ),
       ?_assertEqual( not_found, listz:find( fun( X ) -> X > 5 end, [ 1, 2, 3 ] ) ) ].
+
+iterate_test_() ->
+    [ ?_assertEqual( [], listz:iterate( fun( X ) -> X end, '_', 0 ) ),
+      ?_assertEqual( [ x ], listz:iterate( fun( X ) -> X end, x, 1 ) ),
+      ?_assertEqual( [ 1, 2, 3, 4, 5 ], listz:iterate( fun( X ) -> X + 1 end, 1, 5 ) ) ].

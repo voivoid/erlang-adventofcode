@@ -1,5 +1,5 @@
 -module(listz).
--export([index/2, shiftl/2, shiftr/2, find/2]).
+-export([index/2, shiftl/2, shiftr/2, find/2, iterate/3]).
 
 -spec index( T, list( T ) ) -> non_neg_integer() | not_found.
 index( X, List ) -> index_impl( X, List, 1 ).
@@ -28,3 +28,14 @@ find( Pred, [ X | XS ] ) -> case Pred( X ) of
                                 false -> find( Pred, XS );
                                 true -> X
                             end.
+
+
+-spec iterate( fun( ( T ) -> T ), T, non_neg_integer() ) -> list( T ).
+iterate( _, _, 0 ) -> [];
+iterate( F, Init, N ) ->
+    lists:reverse( iterate_impl( F, Init, N - 1, [ Init ] ) ).
+
+iterate_impl( _, _, 0, Result ) -> Result;
+iterate_impl( F, Init, N, Result ) ->
+    NewVal = F( Init ),
+    iterate_impl( F, NewVal, N - 1, [ NewVal | Result ] ).
