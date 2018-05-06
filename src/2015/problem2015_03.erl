@@ -1,48 +1,83 @@
 -module(problem2015_03).
 -export([solve1/1, solve2/1]).
 
--type chars() :: $^ | $< | $> | $v.
+-type move() :: $^ | $< | $> | $v.
+-type moves() :: list( move() ).
 -type coord() :: { integer(), integer() }.
--type coord_map() :: #{ coord() := non_neg_interger }.
+-type visited_houses() :: sets:set( coord() ).
+-type visitation_strategy() :: fun( ( string(), coord(), visited_houses() ) -> visited_houses() ).
 
--spec increment_map( coord_map(), coord() ) -> coord_map().
-increment_map( Map, Coord ) ->
-    maps:update_with( Coord, fun(V) -> V + 1 end, 0, Map ).
+%%% COMMON
 
--spec update_coord( chars(), coord() ) -> coord().
-update_coord( $^,  {X, Y} ) ->
-    {X, Y-1};
-update_coord( $<,  {X, Y} ) ->
-    {X-1, Y};
-update_coord( $>,  {X, Y} ) ->
-    {X+1, Y};
-update_coord( $v, {X, Y} ) ->
-    {X, Y+1}.
+-spec get_number_of_visited_houses( visited_houses() ) -> non_neg_integer().
+get_number_of_visited_houses( VisitedHouses ) ->
+    sets:size( VisitedHouses ).
+
+-spec visit_house( coord(), visited_houses() ) -> visited_houses().
+visit_house( Coord, VisitedHouses ) ->
+    sets:add_element( Coord, VisitedHouses ).
+
+-spec no_visited_houses() -> visited_houses().
+no_visited_houses() ->
+    sets:new().
+
+-spec next_coord( move(), coord() ) -> coord().
+next_coord( $^, { X, Y } ) ->
+    { X, Y - 1 };
+next_coord( $<, { X, Y } ) ->
+    { X - 1, Y };
+next_coord( $>, { X, Y } ) ->
+    { X + 1, Y };
+next_coord( $v, { X, Y } ) ->
+    { X, Y + 1 }.
+
+-spec move_santa( move(), { coord(), visited_houses() } ) -> { coord(), visited_houses() }.
+move_santa( Move, { SantaCoord, VisitedHouses } ) ->
+    NextCoord = next_coord( Move, SantaCoord ),
+    UpdatedVisitedHouses = visit_house( NextCoord, VisitedHouses ),
+    { NextCoord, UpdatedVisitedHouses }.
+
+-spec solve( moves(), visitation_strategy() ) -> non_neg_integer().
+solve( Input, VisitStrategy ) ->
+    InitialCoord = { 0, 0 },
+    InitialVisitedHouses = visit_house( InitialCoord, no_visited_houses() ),
+
+    TotalVisitedHouses = VisitStrategy( Input, InitialCoord, InitialVisitedHouses ),
+    get_number_of_visited_houses( TotalVisitedHouses ).
 
 
--spec move1( [ chars() ], coord_map(), coord() ) -> non_neg_integer().
-move1( [], Map, _ ) ->
-    maps:size( Map );
-move1( [Char|Input], Map, Coord ) ->
-    NewCoord = update_coord( Char, Coord ),
-    move1( Input, increment_map( Map, NewCoord ), NewCoord  ).
+%%% PART 1
 
--spec solve1( [ chars() ] ) -> non_neg_integer().
+-spec visit_strategy1( string(), coord(), visited_houses() ) -> visited_houses().
+visit_strategy1( Input, InitialCoord, InitialVisitedHouses ) ->
+    { _, TotalVisitedHouses } =
+        lists:foldl( fun move_santa/2,
+                     { InitialCoord, InitialVisitedHouses },
+                     Input ),
+    TotalVisitedHouses.
+
+-spec solve1( [ move() ] ) -> non_neg_integer().
 solve1( Input ) ->
-    move1( Input, #{ { 0,0 } => 1 }, { 0, 0 } ).
+    solve( Input, fun visit_strategy1/3 ).
 
+%%% PART 2
 
--spec move2( [ chars() ], coord_map(), coord(), coord() ) -> non_neg_integer().
-move2( [], Map, _, _ ) ->
-    maps:size( Map );
-move2( [Char|Input], Map, Coord1, Coord2 ) -> % '^'
-    NewCoord = update_coord( Char, Coord1 ),
-    move2( Input, increment_map( Map, NewCoord ), Coord2, NewCoord ).
+-spec visit_strategy2( string(), coord(), visited_houses() ) -> visited_houses().
+visit_strategy2( Input, InitialCoord, InitialVisitedHouses ) ->
+    { _, _, TotalVisitedHouses } =
+        lists:foldl( fun( Move, { CoordToMove, CoordToSkip, VisitedHouses } ) ->
+                             { NextCoord, UpdatedVisitedHouses } = move_santa( Move, { CoordToMove, VisitedHouses } ),
+                             { CoordToSkip, NextCoord, UpdatedVisitedHouses }
+                     end,
+                     { InitialCoord, InitialCoord, InitialVisitedHouses },
+                     Input ),
+    TotalVisitedHouses.
 
--spec solve2( [ chars() ] ) -> non_neg_integer().
+-spec solve2( [ move() ] ) -> non_neg_integer().
 solve2( Input ) ->
-    move2( Input, #{ { 0,0 } => 2 }, { 0, 0 }, { 0, 0 } ).
+    solve( Input, fun visit_strategy2/3 ).
 
+%%% TESTS
 
 -include_lib("eunit/include/eunit.hrl").
 
