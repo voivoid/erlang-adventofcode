@@ -1,24 +1,43 @@
 -module(problem2015_01).
 -export([solve1/1, solve2/1]).
 
--spec solve1( string() ) -> integer().
-solve1( Input ) ->
+-type lift_instruction() :: $( | $).
+-type instructions() :: list( lift_instruction() ).
+-type floor() :: integer().
+-type steps() :: non_neg_integer().
+
+%%% PART 1
+
+-spec count_final_floor( instructions() ) -> floor().
+count_final_floor( Input ) ->
     lists:foldl( fun( $(, Floor ) -> Floor + 1;
                     ( $), Floor ) -> Floor - 1
                  end,
                  0,
                  Input ).
 
+-spec solve1( string() ) -> integer().
+solve1( Input ) ->
+    count_final_floor( Input ).
+
+%%% PART 2
+
+-spec count_number_of_steps_till_basement( instructions() ) -> steps().
+count_number_of_steps_till_basement( Input ) ->
+    { _, Steps } = listz:foldl_stoppable( fun( _,  { -1,    Steps } ) -> { stop, { -1, Steps } };
+                                             ( $(, { Floor, Steps } ) -> { Floor + 1, Steps + 1 };
+                                             ( $), { Floor, Steps } ) -> { Floor - 1, Steps + 1 }
+                                          end,
+                                          { 0, 0 },
+                                          stop,
+                                          Input ),
+    Steps.
+
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
-    { _, ResultCounter } = listz:foldl_stoppable( fun( _,  { -1,    Counter } ) -> { stop, { -1, Counter } };
-                                                     ( $(, { Floor, Counter } ) -> { Floor + 1, Counter + 1 };
-                                                     ( $), { Floor, Counter } ) -> { Floor - 1, Counter + 1 }
-                                                  end,
-                                                  { 0, 0 },
-                                                  stop,
-                                                  Input ),
-    ResultCounter.
+    count_number_of_steps_till_basement( Input ).
+
+%%% TESTS
 
 -include_lib("eunit/include/eunit.hrl").
 
