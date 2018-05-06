@@ -26,3 +26,13 @@ iterate_test_() ->
     [ ?_assertEqual( [], listz:iterate( fun( X ) -> X end, '_', 0 ) ),
       ?_assertEqual( [ x ], listz:iterate( fun( X ) -> X end, x, 1 ) ),
       ?_assertEqual( [ 1, 2, 3, 4, 5 ], listz:iterate( fun( X ) -> X + 1 end, 1, 5 ) ) ].
+
+foldl_stoppable_test_() ->
+    [ ?_assertEqual( 42, listz:foldl_stoppable( fun( _, Acc  ) -> Acc end, 42, '_', [] ) ),
+      ?_assertEqual( 55, listz:foldl_stoppable( fun erlang:'+'/2, 0, '_', lists:seq( 1, 10 ) ) ),
+      ?_assertEqual( 15, listz:foldl_stoppable( fun( _, Acc ) when Acc > 10 -> { stop, Acc };
+                                                   ( X, Acc ) -> X + Acc
+                                                end,
+                                                0,
+                                                stop,
+                                                lists:seq( 1, 10 ) ) ) ].
