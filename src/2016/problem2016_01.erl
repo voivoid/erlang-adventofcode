@@ -81,7 +81,7 @@ find_first_intersection( [ { Turn, Steps } | Rest ], { Pos, Face }, PrevLines ) 
 
     case find_if_already_visited( StepsList, PrevLines ) of
         not_found ->
-            FirstStep = lists:nth( 1, StepsList ),
+            FirstStep = erlang:hd( StepsList ),
             LastStep = lists:last( StepsList ),
             NextPos = { LastStep, NewFace },
             NewLine = { FirstStep, LastStep } ,

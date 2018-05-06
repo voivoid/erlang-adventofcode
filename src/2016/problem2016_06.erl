@@ -30,7 +30,7 @@ find_most_freq_char( FreqsMap, CorrectionAlgo ) ->
     { MostCommonChar, _ } =
         case CorrectionAlgo of
             most_common -> lists:last( SortedFreqs );
-            least_common -> lists:nth( 1, SortedFreqs )
+            least_common -> erlang:hd( SortedFreqs )
         end,
 
     MostCommonChar.
