@@ -19,20 +19,17 @@ parse_wire_val( Wire ) ->
     end.
 
 run_instruction( { Source }, WiresMap ) -> 
-    case parse_wire_val( Source ) of
-        { signal, Signal } -> Signal;
-        { wire, Source } -> get_wire_signal( Source, WiresMap )
-    end;
+    get_wire_signal( Source, WiresMap );
 run_instruction( { UnaryOp, Source }, WiresMap ) -> 
-    S = get_wire_signal( Source, WiresMap ),
+    { S, WiresMap2 } = get_wire_signal( Source, WiresMap ),
     Op = 
         case UnaryOp of
             "NOT" -> fun erlang:'bnot'/1
         end,
-    Op( S );
+    { Op( S ), WiresMap2 };
 run_instruction( { BinaryOp, Source1, Source2 }, WiresMap ) -> 
-    S1 = get_wire_signal( Source1, WiresMap ),
-    S2 = get_wire_signal( Source2, WiresMap ),
+    { S1, WiresMap2 } = get_wire_signal( Source1, WiresMap ),
+    { S2, WiresMap3 } = get_wire_signal( Source2, WiresMap2 ),
     Op = 
         case BinaryOp of
         "LSHIFT" -> fun erlang:'bsl'/2;
@@ -40,17 +37,22 @@ run_instruction( { BinaryOp, Source1, Source2 }, WiresMap ) ->
         "AND" -> fun erlang:'band'/2;
         "OR" -> fun erlang:'bor'/2
         end,
-    Op( S1, S2 ).
+    { Op( S1, S2 ), WiresMap3 }.
 
 get_wire_signal( Wire, WiresMap ) ->
-    Instruction = maps:get( Wire, WiresMap ),
-    run_instruction( Instruction, WiresMap ).
+    case parse_wire_val( Wire ) of
+        { signal, Signal } -> { Signal, WiresMap };
+        { wire, Wire } -> 
+            Instruction = maps:get( Wire, WiresMap ),
+            run_instruction( Instruction, WiresMap )
+    end.
 
 
 solve1( Input ) ->
     Lines = string:tokens( Input, "\n" ),
     WiresMap = make_wires_map( Lines ),
-    get_wire_signal( "a", WiresMap ).
+    { Signal, _ } = get_wire_signal( "a", WiresMap ),
+    Signal.
 
 
 -include_lib("eunit/include/eunit.hrl").
@@ -58,4 +60,7 @@ solve1( Input ) ->
 solve1_test_() ->
     [ ?_assertEqual( 42, solve1( "42 -> a" ) ),
       ?_assertEqual( 42, solve1( "42 -> x
-                                  x  -> a" ) ) ].
+                                  x  -> a" ) ),
+      ?_assertEqual( 2, solve1( "2 -> x
+                                 6 -> y
+                                 x AND y -> a" ) ) ].
