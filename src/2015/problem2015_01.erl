@@ -6,13 +6,17 @@
 -type floor() :: integer().
 -type steps() :: non_neg_integer().
 
+
+%%% COMMON
+
+next_floor( $(, Floor ) -> Floor + 1;
+next_floor( $), Floor ) -> Floor - 1.
+
 %%% PART 1
 
 -spec count_final_floor( instructions() ) -> floor().
 count_final_floor( Instructions ) ->
-    lists:foldl( fun( $(, Floor ) -> Floor + 1;
-                    ( $), Floor ) -> Floor - 1
-                 end,
+    lists:foldl( fun next_floor/2,
                  0,
                  Instructions ).
 
@@ -25,8 +29,7 @@ solve1( Input ) ->
 -spec count_number_of_steps_till_basement( instructions() ) -> steps().
 count_number_of_steps_till_basement( Instructions ) ->
     { _, Steps } = listz:foldl_stoppable( fun( _,  { -1,    Steps } ) -> { stop, { -1, Steps } };
-                                             ( $(, { Floor, Steps } ) -> { Floor + 1, Steps + 1 };
-                                             ( $), { Floor, Steps } ) -> { Floor - 1, Steps + 1 }
+                                             ( Instruction, { Floor, Steps } ) -> { next_floor( Instruction, Floor ), Steps + 1 }
                                           end,
                                           { 0, 0 },
                                           stop,

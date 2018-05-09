@@ -9,6 +9,8 @@
 -type instruction() :: { source() } | { unary_ops(), source() } | { binary_ops(), source(), source() }.
 -type wires_map() :: #{ id() := instruction() }.
 
+%%% COMMON
+
 -spec parse_source( string() ) -> source().
 parse_source( Wire ) ->
     case string:to_integer( Wire ) of
@@ -73,10 +75,14 @@ get_signal_a( WiresMap ) ->
     { SignalA, _ } = get_wire_signal( "a", WiresMap ),
     SignalA.
 
+%%% PART 1
+
 -spec solve1( string() ) -> integer().
 solve1( Input ) ->
     WiresMap = make_wires_map( Input ),
     get_signal_a( WiresMap ).
+
+%%% PART 2
 
 -spec solve2( string() ) -> integer().
 solve2( Input ) ->
@@ -86,6 +92,7 @@ solve2( Input ) ->
     NewWiresMap = WiresMap#{ "b" => { { signal, SignalA } } },
     get_signal_a( NewWiresMap ).
 
+%%% TESTS
 
 -include_lib("eunit/include/eunit.hrl").
 
