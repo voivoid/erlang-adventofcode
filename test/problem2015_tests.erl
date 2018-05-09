@@ -16,3 +16,6 @@ problem_05_2_test_() -> utils:make_test( "2015_05", fun problem2015_05:solve2/1,
 
 problem_07_1_test_() -> utils:make_test( "2015_07", fun problem2015_07:solve1/1, 46065 ).
 problem_07_2_test_() -> utils:make_test( "2015_07", fun problem2015_07:solve2/1, 14134 ).
+
+problem_08_1_test_() -> utils:make_test( "2015_08", fun problem2015_08:solve1/1, 1333 ).
+problem_08_2_test_() -> utils:make_test( "2015_08", fun problem2015_08:solve2/1, 2046 ).
