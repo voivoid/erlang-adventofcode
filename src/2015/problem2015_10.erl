@@ -3,12 +3,14 @@
 
 %%% COMMON
 
+-spec transform( string() ) -> string().
 transform( [] ) -> "";
 transform( [ Digit | _ ] = Digits ) ->
     { SameDigits, RestDigits } = lists:splitwith( fun( D ) -> D == Digit end, Digits ),
     NumOfSameDigits = erlang:integer_to_list( erlang:length( SameDigits ) ),
     NumOfSameDigits ++ [ Digit ] ++ transform( RestDigits ).
 
+-spec solve( string(), non_neg_integer() ) -> non_neg_integer().
 solve( Input, TransformNum ) ->
     erlang:length( lists:foldl( fun( _, Num ) ->
                          transform( Num )
@@ -19,11 +21,13 @@ solve( Input, TransformNum ) ->
 
 %%% PART 1
 
+-spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     solve( Input, 40 ).
 
 %%% PART 2
 
+-spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     solve( Input, 50 ).
 

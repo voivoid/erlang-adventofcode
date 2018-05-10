@@ -14,7 +14,7 @@ Day | 2015 | 2016 | 2017
 07  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_07.erl)     | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2016/problem2016_07.erl)     |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_07.erl)
 08  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_08.erl)     |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_08.erl)
 09  |      | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2016/problem2016_09.erl)     |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_09.erl)
-10  |      |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_10.erl)
+10  | [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2015/problem2015_10.erl)     |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_10.erl)
 11  |      |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_11.erl)
 12  |      |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_12.erl)
 13  |      |      |  [✓](https://github.com/voivoid/erlang-adventofcode/blob/master/src/2017/problem2017_13.erl)
