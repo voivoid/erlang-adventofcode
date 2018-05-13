@@ -3,9 +3,9 @@
 
 -type index() :: non_neg_integer().
 -type prog() :: char().
--type progs() :: list( prog() ).
+-type progs() :: [ prog() ].
 -type move() :: { s, non_neg_integer() } | { x, index(), index() } | { p, prog(), prog() }.
--type moves() :: list( move() ).
+-type moves() :: [ move() ].
 
 
 -spec do_move( move(), progs() ) -> progs().

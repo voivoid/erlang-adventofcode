@@ -2,11 +2,11 @@
 -export([solve1/1, solve2/1]).
 
 -type instruction() :: $U | $L | $R | $D.
--type instructions() :: list( instruction() ).
+-type instructions() :: [ instruction() ].
 -type coord() :: { non_neg_integer(), non_neg_integer() }.
 -type button() :: char().
 -type buttons_map() :: #{ coord() := button() }.
--type buttons() :: list( button() ).
+-type buttons() :: [ button() ].
 
 -spec next_keypad_coord( instruction(), coord() ) -> coord().
 next_keypad_coord( $U, { X, Y } ) -> { X, Y - 1 };

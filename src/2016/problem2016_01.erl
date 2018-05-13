@@ -6,11 +6,11 @@
 -type coord() :: { integer(), integer() }.
 -type pos() :: { coord(), dir() }.
 -type steps() :: non_neg_integer().
--type steps_list() :: list( coord() ).
+-type steps_list() :: [ coord() ].
 -type instruction() :: { turn(), steps() }.
 
 -type line() :: { coord(), coord() }.
--type lines() :: list( line() ).
+-type lines() :: [ line() ].
 
 -spec parse_instruction( [ char() ] ) -> instruction().
 parse_instruction( [ $L | Steps ] ) ->
@@ -72,7 +72,7 @@ find_if_already_visited( StepsList, PrevLines ) ->
                 end,
                 StepsList ).
 
--spec find_first_intersection( list( instruction() ), pos(), lines() ) -> coord().
+-spec find_first_intersection( [ instruction() ], pos(), lines() ) -> coord().
 find_first_intersection( [ { _, 0 } = Instruction | Rest ], CurrentPos, PrevLines ) ->
     find_first_intersection( Rest, get_next_pos( Instruction, CurrentPos ), PrevLines );
 find_first_intersection( [ { Turn, Steps } | Rest ], { Pos, Face }, PrevLines ) ->

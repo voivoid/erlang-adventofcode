@@ -25,7 +25,7 @@ parse_val( Value ) ->
         _ -> Value
     end.
 
--spec parse_command( list( string() ) ) -> cmd().
+-spec parse_command( [ string() ] ) -> cmd().
 parse_command( [ "set", Reg, Val ] ) ->
     { set, Reg, parse_val( Val ) };
 parse_command( [ "add", Reg, Val ] ) ->

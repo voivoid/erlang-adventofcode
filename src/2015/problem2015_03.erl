@@ -2,7 +2,7 @@
 -export([solve1/1, solve2/1]).
 
 -type move() :: $^ | $< | $> | $v.
--type moves() :: list( move() ).
+-type moves() :: [ move() ].
 -type coord() :: { integer(), integer() }.
 -type visited_houses() :: sets:set( coord() ).
 -type visitation_strategy() :: fun( ( string(), coord(), visited_houses() ) -> visited_houses() ).

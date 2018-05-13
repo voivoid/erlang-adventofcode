@@ -2,7 +2,7 @@
 -export([solve1/1, solve2/1]).
 
 -type instruction() :: $( | $).
--type instructions() :: list( instruction() ).
+-type instructions() :: [ instruction() ].
 -type floor() :: integer().
 -type steps() :: non_neg_integer().
 

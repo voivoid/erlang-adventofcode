@@ -3,13 +3,13 @@
 
 -type hash() :: nonempty_string().
 -type bit() :: 0 | 1.
--type bitlist() :: list( bit() ).
+-type bitlist() :: [ bit() ].
 -type bitset() :: sets:set( bit() ).
 -type coord() :: { non_neg_integer(), non_neg_integer() }.
--type coords() :: list( coord() ).
+-type coords() :: [ coord() ].
 -type visited() :: sets:set( coord() ).
 
--spec gen_inputs( string() ) -> list( string() ).
+-spec gen_inputs( string() ) -> [ string() ].
 gen_inputs( Input ) ->
     lists:map( fun( N ) -> lists:concat( [ Input, "-", N ] ) end, lists:seq( 0, 127 ) ).
 
@@ -22,7 +22,7 @@ translate_to_bits( Hash ) ->
     Bin = << << ( erlang:list_to_integer( [ HexChar ], 16 ) ):4 >> || HexChar <- Hash >>,
     [ Bit || <<Bit:1>> <= Bin ].
 
--spec get_bits_2d_list( string() ) -> list( bitlist() ).
+-spec get_bits_2d_list( string() ) -> [ bitlist() ].
 get_bits_2d_list( Input ) ->
     Inputs = gen_inputs( Input ),
     Hashes = rpc:pmap({?MODULE, calc_hash}, [], Inputs ),

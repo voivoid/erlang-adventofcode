@@ -1,12 +1,12 @@
 -module(zipper).
 -export([from_list/1, to_list/1, next/1, next_n/2, prev/1, prev_n/2, get/1, get_n/2, update/2, update_with_list/2, prepend/2, append/2, is_empty/1, is_first/1, is_last/1, pos/1, len/1]).
 
--type zipper( T ) :: { list( T ), list( T ) }.
+-type zipper( T ) :: { [T], [T] }.
 
 -export_type([zipper/1]).
 
 
--spec from_list( list( T ) ) -> zipper( T ).
+-spec from_list( [T] ) -> zipper( T ).
 from_list( L ) -> { [], L }.
 
 -spec next( zipper( T ) ) -> zipper( T ).
@@ -35,10 +35,10 @@ next_n( N, Zipper ) when N < 0 -> prev_n( erlang:abs( N ), Zipper ).
 get( { _, [ Current | _ ] } ) ->
     Current.
 
--spec get_n( non_neg_integer(), zipper( T ) ) -> list( T ).
+-spec get_n( non_neg_integer(), zipper( T ) ) -> [T].
 get_n( N, Zipper ) -> get_n_impl( N, Zipper ).
 
--spec get_n_impl( non_neg_integer(), zipper( T ) ) -> list( T ).
+-spec get_n_impl( non_neg_integer(), zipper( T ) ) -> [T].
 get_n_impl( 0, _ ) -> [];
 get_n_impl( N, Zipper ) ->
     [ zipper:get( Zipper ) | get_n_impl( N - 1, next( Zipper ) ) ].
@@ -47,7 +47,7 @@ get_n_impl( N, Zipper ) ->
 update( New, { Prev, [ _ | Next ] } ) ->
     { Prev, [ New | Next ] }.
 
--spec update_with_list( list( T ), zipper( T ) ) -> zipper( T ).
+-spec update_with_list( [T], zipper( T ) ) -> zipper( T ).
 update_with_list( Updates, Zipper ) ->
     lists:foldl( fun ( U, Z ) -> next( update( U, Z ) ) end, Zipper, Updates ).
 
@@ -60,7 +60,7 @@ prepend( New, { Prev, [ Current | Next ] } ) ->
 append( New, { Prev, [ Current | Next ] } ) ->
     { Prev, [ Current, New | Next ] }.
 
--spec to_list( zipper( T ) ) -> list( T ).
+-spec to_list( zipper( T ) ) -> [T].
 to_list( { Prev, Next } ) ->
     lists:reverse( Prev ) ++ Next.
 

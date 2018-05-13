@@ -4,7 +4,7 @@
 
 -type counter() :: non_neg_integer().
 -type parser_state() :: bang | garbage | { group, counter() }.
--type state() :: { list( parser_state() ), counter(), counter() }.
+-type state() :: { [ parser_state() ], counter(), counter() }.
 
 -spec process( char(), state() ) -> state().
 process( _, { [ bang | States ], S, G } ) ->

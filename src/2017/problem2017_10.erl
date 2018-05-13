@@ -33,7 +33,7 @@ num_to_hex_str( Dec ) ->
         [_, _] = S -> S
     end.
 
--spec hash_nums_to_hex_str( list( num() ) ) -> string().
+-spec hash_nums_to_hex_str( [ num() ] ) -> string().
 hash_nums_to_hex_str( HashNums ) ->
     HashStr = lists:foldl( fun( Num, Acc ) -> num_to_hex_str( Num ) ++ Acc end,
                            [],

@@ -4,7 +4,7 @@
 -type ip() :: string().
 -type aba() :: { char(), char() }.
 -type seq() :: string().
--type seqs() :: list( seq() ).
+-type seqs() :: [ seq() ].
 -type seq_type() :: hypernet | supernet.
 -type typed_seq() :: { seq(), seq_type() }.
 
@@ -23,7 +23,7 @@ has_aba( { A, B }, [ B, A, B | _    ] ) -> true;
 has_aba( { A, B }, [ _       | Rest ] ) -> has_aba( { A, B }, Rest );
 has_aba( _,        _                  ) -> false.
 
--spec check_seqs_are_abba( list( typed_seq() ) ) -> boolean().
+-spec check_seqs_are_abba( [ typed_seq() ] ) -> boolean().
 check_seqs_are_abba( TypedSeqs ) ->
     Status = lists:foldl(
           fun( _,                  stop   ) -> stop;
@@ -42,7 +42,7 @@ check_seqs_are_abba( TypedSeqs ) ->
         Status -> Status
     end.
 
--spec check_seqs_have_aba( aba(), seq_type(), list( typed_seq() ) ) -> boolean().
+-spec check_seqs_have_aba( aba(), seq_type(), [ typed_seq() ] ) -> boolean().
 check_seqs_have_aba( _,        _,    []                       ) -> false;
 check_seqs_have_aba( { A, B }, Type, [ { _,   Type } | Rest ] ) -> check_seqs_have_aba( { A, B }, Type, Rest );
 check_seqs_have_aba( { A, B }, Type, [ { Seq, _    } | Rest ] ) ->
@@ -51,7 +51,7 @@ check_seqs_have_aba( { A, B }, Type, [ { Seq, _    } | Rest ] ) ->
         false -> check_seqs_have_aba( { A, B }, Type, Rest )
     end.
 
--spec check_seqs_are_ssl( list( typed_seq() ) ) -> boolean().
+-spec check_seqs_are_ssl( [ typed_seq() ] ) -> boolean().
 check_seqs_are_ssl( []                            ) -> false;
 check_seqs_are_ssl( [ { Seq, Type } | TypedSeqs ] ) ->
     IsSSL =
@@ -65,7 +65,7 @@ check_seqs_are_ssl( [ { Seq, Type } | TypedSeqs ] ) ->
         false -> check_seqs_are_ssl( TypedSeqs )
     end.
 
--spec get_typed_seqs( ip() ) -> list( typed_seq() ).
+-spec get_typed_seqs( ip() ) -> [ typed_seq() ].
 get_typed_seqs( IP ) ->
     Seqs = string:tokens( IP, "[]" ),
     SeqsNum = erlang:length( Seqs ),

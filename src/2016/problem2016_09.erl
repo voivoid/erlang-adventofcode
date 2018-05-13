@@ -3,10 +3,12 @@
 
 %%% COMMON
 
+-spec parse_marker( string() ) -> { non_neg_integer(), non_neg_integer() }.
 parse_marker( Marker ) ->
     [ Chars, ToRepeat ] = string:tokens( Marker, "x" ),
     { erlang:list_to_integer( Chars ), erlang:list_to_integer( ToRepeat ) }.
 
+-spec decompress( string(), boolean() ) -> non_neg_integer().
 decompress( Line, RecursiveDescompression ) ->
     { Left, MarkerPlusRest }  = lists:splitwith( fun( C ) -> C /= $( end, Line ),
     LeftLen = erlang:length( Left ),
@@ -30,11 +32,13 @@ decompress( Line, RecursiveDescompression ) ->
 
 %%% PART 1
 
+-spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     decompress( Input, false ).
 
 %%% PART 2
 
+-spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     decompress( Input, true ).
 

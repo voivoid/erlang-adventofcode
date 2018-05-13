@@ -4,7 +4,7 @@
 
 -record(room, { name :: string(), id :: integer(), checksum :: string() }).
 -type room() :: #room{}.
--type rooms() :: list( room() ).
+-type rooms() :: [ room() ].
 
 -type letter() :: $a..$z.
 -type letters_freqs() :: orddict:ordict( letter(), non_neg_integer() ).
@@ -27,7 +27,7 @@ make_letter_frequency_dict( Letters ) ->
                  orddict:new(),
                  LettersWithoutDashes ).
 
--spec get_sorted_by_frequency_letters_list( letters_freqs() ) -> list( { letter(), non_neg_integer() } ).
+-spec get_sorted_by_frequency_letters_list( letters_freqs() ) -> [ { letter(), non_neg_integer() } ].
 get_sorted_by_frequency_letters_list( LettersDict ) ->
     lists:reverse( lists:keysort( 2, lists:reverse( orddict:to_list( LettersDict ) ) ) ).
 

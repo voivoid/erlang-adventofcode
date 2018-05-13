@@ -4,7 +4,7 @@
 -type depth() :: non_neg_integer().
 -type range() :: non_neg_integer().
 -type layer() :: { depth(), range() }.
--type layers() :: list( layer() ).
+-type layers() :: [ layer() ].
 -type severity() :: non_neg_integer().
 -type delay() :: non_neg_integer().
 

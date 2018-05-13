@@ -3,14 +3,14 @@
 
 
 -type freq_map() :: #{ char() := non_neg_integer() }.
--type freq_list() :: list( freq_map() ).
+-type freq_list() :: [ freq_map() ].
 -type algo() :: most_common | least_common.
 
 -spec zip_char_with_freqs( char(), freq_map() ) -> freq_map().
 zip_char_with_freqs( Char, FreqMap ) ->
     maps:update_with( Char, fun( C ) -> C + 1 end, 1, FreqMap ).
 
--spec calc_characters_frequencies( list( string() ) ) -> freq_list().
+-spec calc_characters_frequencies( [ string() ] ) -> freq_list().
 calc_characters_frequencies( [ L | _ ] = Lines ) ->
     LineLen = erlang:length( L ),
 

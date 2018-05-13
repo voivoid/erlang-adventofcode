@@ -22,7 +22,7 @@ solve1( Input ) ->
 
     erlang:length( RightTriangles ).
 
--spec process_lines( list( string() ) ) -> non_neg_integer().
+-spec process_lines( [ string() ] ) -> non_neg_integer().
 process_lines( [] ) -> 0;
 process_lines( [ { A1, A2, A3 }, { B1, B2, B3 }, { C1, C2, C3 } | Lines ] ) ->
     Triangles = [ { A1, B1,C1 }, { A2, B2, C2 }, { A3, B3, C3 } ],
