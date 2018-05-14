@@ -3,14 +3,9 @@
 
 %%% COMMON
 
--spec get_md5_str( string() ) -> string().
-get_md5_str( Str ) ->
-    MD5 = erlang:md5( Str ),
-    lists:append( [ integer_to_list( X, 16 ) || <<X:4>> <= MD5 ] ).
-
 -spec make_md5( string(), non_neg_integer() ) -> string().
 make_md5( SecretKey, PostfixNum ) ->
-    get_md5_str( SecretKey ++ erlang:integer_to_list( PostfixNum ) ).
+    algos:get_md5_str( SecretKey ++ erlang:integer_to_list( PostfixNum ) ).
 
 -spec find_prefixed_md5( string(), non_neg_integer(), string() ) -> non_neg_integer().
 find_prefixed_md5( SecretKey, PostfixNum, Prefix ) ->
