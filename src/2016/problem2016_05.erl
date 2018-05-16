@@ -9,7 +9,7 @@
 -type md5() :: string().
 -type md5_prefix() :: md5().
 -type password() :: string().
--type password_acc() :: #{ non_neg_integer() := char() }.
+-type letters_map() :: #{ non_neg_integer() := char() }.
 
 -spec make_md5( doorid(), doorid_postfix() ) -> md5().
 make_md5( DoorID, Postfix ) ->
@@ -23,45 +23,46 @@ find_prefixed_md5( DoorID, PostfixNum, Prefix ) ->
         false -> find_prefixed_md5( DoorID, PostfixNum + 1, Prefix )
     end.
 
--spec find_password( doorid() ) -> password().
-find_password( DoorID ) ->
-    { _, PasswordAcc } = lists:foldl( fun( _, { PostfixNum, PasswordAcc } ) ->
-                                              { MD5PostfixNum, MD5 } = find_prefixed_md5( DoorID, PostfixNum, "00000" ),
-                                              NextPasswordChar = lists:nth( 6, MD5 ),
-                                              { MD5PostfixNum + 1, [ NextPasswordChar | PasswordAcc ] }
-                                      end,
-                                      { 0, "" },
-                                      lists:seq( 1, 8 ) ),
-    lists:reverse( PasswordAcc ).
-
 %%% PART 1
+
+-spec find_password1( doorid() ) -> password().
+find_password1( DoorID ) ->
+    { _, ReversedPassword } = lists:foldl( fun( _, { PostfixNum, PasswordAcc } ) ->
+                                                   { MD5PostfixNum, MD5 } = find_prefixed_md5( DoorID, PostfixNum, "00000" ),
+                                                   NextPasswordChar = lists:nth( 6, MD5 ),
+                                                   { MD5PostfixNum + 1, [ NextPasswordChar | PasswordAcc ] }
+                                           end,
+                                           { 0, "" },
+                                   lists:seq( 1, 8 ) ),
+    lists:reverse( ReversedPassword ).
+
 
 -spec solve1( string() ) -> string().
 solve1( Input ) ->
-    find_password( Input ).
+    find_password1( Input ).
 
 %%% PART 2
 
--spec is_password_found( password_acc() ) -> boolean().
-is_password_found( PasswordAcc ) ->
-    maps:size( PasswordAcc ) == 8.
+-spec is_password_found( letters_map() ) -> boolean().
+is_password_found( LettersMap ) ->
+    maps:size( LettersMap ) == 8.
 
--spec update_password( password_acc(), char(), non_neg_integer() ) -> password_acc().
-update_password( PasswordAcc, Char, Pos ) ->
-    case Pos >= 0 andalso Pos =< 7 andalso ( not maps:is_key( Pos, PasswordAcc ) ) of
-        true -> PasswordAcc#{ Pos => Char };
-        false -> PasswordAcc
+-spec update_password( letters_map(), char(), non_neg_integer() ) -> letters_map().
+update_password( LettersMap, Char, Pos ) ->
+    case Pos >= 0 andalso Pos =< 7 andalso ( not maps:is_key( Pos, LettersMap ) ) of
+        true -> LettersMap#{ Pos => Char };
+        false -> LettersMap
     end.
 
--spec find_password2( doorid(), password_acc(), doorid_postfix() ) -> password().
-find_password2( DoorID, PasswordAcc, PostfixNum ) ->
-    case is_password_found( PasswordAcc ) of
-        true -> { _, Password } = lists:unzip( lists:sort( maps:to_list( PasswordAcc ) ) ),
+-spec find_password2( doorid(), letters_map(), doorid_postfix() ) -> password().
+find_password2( DoorID, LettersMap, PostfixNum ) ->
+    case is_password_found( LettersMap ) of
+        true -> { _, Password } = lists:unzip( lists:sort( maps:to_list( LettersMap ) ) ),
                 Password;
         false -> { MD5PostfixNum, MD5 } = find_prefixed_md5( DoorID, PostfixNum, "00000" ),
                  Pos = erlang:list_to_integer( [ lists:nth( 6, MD5 ) ], 16 ),
                  Char = lists:nth( 7, MD5 ),
-                 NextPassword = update_password( PasswordAcc, Char, Pos ),
+                 NextPassword = update_password( LettersMap, Char, Pos ),
                  find_password2( DoorID, NextPassword, MD5PostfixNum + 1 )
     end.
 
