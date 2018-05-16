@@ -11,5 +11,5 @@ load_input( FilePath ) ->
 make_test(InputFileName, Func, Expected) ->
     TestInputFile = "test/inputs/" ++ InputFileName,
     [ TestName ] = io_lib:format( "~p", [ Func ] ),
-    { setup, fun() -> load_input( TestInputFile ) end, fun ( Input ) -> { TestName, timeout, 60, ?_assertEqual( Expected, Func( Input ) ) } end }.
+    { setup, fun() -> load_input( TestInputFile ) end, fun ( Input ) -> { TestName, timeout, 120, ?_assertEqual( Expected, Func( Input ) ) } end }.
 
