@@ -7,7 +7,7 @@
 -type rooms() :: [ room() ].
 
 -type letter() :: $a..$z.
--type letters_freqs() :: orddict:ordict( letter(), non_neg_integer() ).
+-type letters_freqs() :: orddict:orddict( letter(), non_neg_integer() ).
 
 -spec parse_room( string() ) -> room().
 parse_room( Line ) ->

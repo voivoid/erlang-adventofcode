@@ -6,7 +6,7 @@
 
 -spec jump( Offsets :: #{ integer() := integer() },
             Len :: integer(),
-            Idx :: array:array_index(),
+            Idx :: integer(),
             Counter :: integer(),
             CalcNewOffset :: offset_calculator() )
           -> non_neg_integer().
