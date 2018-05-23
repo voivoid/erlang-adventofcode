@@ -3,17 +3,45 @@
 
 %%% PART 1
 
-solve1( Input ) ->
+-spec solve1( string() ) -> non_neg_integer().
+
+sum_all_numbers( Input ) ->
     Separators = lists:seq( $a, $z ) ++ "{}[],\":",
     NumbersStrs = string:tokens( Input, Separators ),
     Numbers = lists:map( fun erlang:list_to_integer/1, NumbersStrs ),
     lists:sum( Numbers ).
 
+solve1( Input ) ->
+    sum_all_numbers( Input ).
+
 %%% PART 2
 
+-spec sum_all_numbers_except_red( jiffy:json_value() ) -> non_neg_integer().
+sum_all_numbers_except_red( Bin ) when erlang:is_binary( Bin ) ->
+    0;
+sum_all_numbers_except_red( Int ) when erlang:is_integer( Int ) ->
+    Int;
+sum_all_numbers_except_red( List ) when erlang:is_list( List ) ->
+    lists:foldl( fun( E, Acc ) ->
+                         Acc + sum_all_numbers_except_red( E )
+                 end,
+                 0,
+                 List );
+sum_all_numbers_except_red( Map ) when erlang:is_map( Map ) ->
+    { Counter, _ } = maps:fold( fun ( _, _,         { _, true } = Acc ) -> Acc;
+                                    ( _, <<"red">>, _                 ) -> { 0, true };
+                                    ( _, V,         { Counter, S }    ) -> { Counter + sum_all_numbers_except_red( V ), S }
+                                end,
+                                { 0, false },
+                                Map ),
+    Counter.
+
+-spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
     Json = jiffy:decode( erlang:list_to_binary( Input ), [ return_maps ] ),
-%    solve1( Input ) - count_red( Json ).
+    sum_all_numbers_except_red( Json ).
+
+%%% TESTS
 
 -include_lib("eunit/include/eunit.hrl").
 
