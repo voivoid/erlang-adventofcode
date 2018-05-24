@@ -1,5 +1,5 @@
 -module(listz).
--export([index/2, shiftl/2, shiftr/2, find/2, iterate/3, foldl_stoppable/4]).
+-export([index/2, shiftl/2, shiftr/2, find/2, iterate/3, foldl_stoppable/4, permutations/1]).
 
 -spec index( T, [T] ) -> non_neg_integer() | not_found.
 index( X, List ) -> index_impl( X, List, 1 ).
@@ -48,3 +48,7 @@ foldl_stoppable( F, Init, StopAtom, [ X | XS ] ) ->
         { StopAtom, Result } -> Result;
         Result -> foldl_stoppable( F, Result, StopAtom, XS )
     end.
+
+-spec permutations( [T] ) -> [ [T] ].
+permutations( [] ) -> [ [] ];
+permutations( L ) -> [ [ X | XS ]  || X <- L, XS <- permutations( L -- [ X ] ) ].

@@ -36,3 +36,9 @@ foldl_stoppable_test_() ->
                                                 0,
                                                 stop,
                                                 lists:seq( 1, 10 ) ) ) ].
+permutations_test_() ->
+    [ ?_assertEqual( [ [] ],    listz:permutations( [] ) ),
+      ?_assertEqual( [ [ 1 ] ], listz:permutations( [ 1 ] ) ),
+      ?_assertEqual( [ [ 1, 2 ], [ 2, 1 ] ], listz:permutations( [ 1, 2 ] ) ),
+      ?_assertEqual( [ [ 1, 2, 3 ], [ 1, 3, 2 ], [ 2, 1, 3 ], [ 2, 3, 1 ], [ 3, 1, 2 ], [ 3, 2, 1 ] ], listz:permutations( [ 1, 2, 3 ] ) )
+    ].
