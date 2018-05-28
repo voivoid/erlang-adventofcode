@@ -43,8 +43,11 @@ solve1( Input ) ->
 
 %%% PART 2
 
-solve2( Input ) ->
+solve2( _Input, _Time ) ->
     0.
+
+solve2( Input ) ->
+    solve2( Input, 2503 ).
 
 %%% TESTS
 
