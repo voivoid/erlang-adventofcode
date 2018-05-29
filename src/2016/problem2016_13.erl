@@ -1,5 +1,7 @@
 -module(problem2016_13).
--export([solve1/1]).
+-export([solve1/1, solve2/1]).
+
+%%% COMMON
 
 -type favnum() :: integer().
 -type coord() :: non_neg_integer().
@@ -28,32 +30,54 @@ get_movable_neighbours( FavNum, Pos ) ->
     Neighbours = get_neighbours( Pos ),
     lists:filter( fun( Neighbour ) -> is_movable( FavNum, Neighbour ) end, Neighbours ).
 
--spec find_shortest_path_len( favnum(), pos(), to_visit(), visited() ) -> path_len().
-find_shortest_path_len( FavNum, FinishPos, ToVisit, Visited ) ->
-    { { value, { CurrentPos, CurrentPathLen } }, ToVisitWithoutCurrent } = queue:out( ToVisit ),
-    case { FinishPos == CurrentPos, sets:is_element( CurrentPos, Visited ) } of
-        { true, _ } -> CurrentPathLen;
-        { _, true } -> find_shortest_path_len( FavNum, FinishPos, queue:drop( ToVisit ) , Visited );
-        _ ->
-            CurrentNeighbours = get_movable_neighbours( FavNum, CurrentPos ),
-            NewToVisit = lists:foldl( fun( ToVisitPos, ToVisitAcc ) ->
-                                              queue:in( { ToVisitPos, CurrentPathLen + 1 }, ToVisitAcc )
-                                      end,
-                                      ToVisitWithoutCurrent,
-                                      CurrentNeighbours ),
-            NewVisited = sets:add_element( CurrentPos, Visited ),
-            find_shortest_path_len( FavNum, FinishPos, NewToVisit, NewVisited )
+-spec find_shortest_path_len( favnum(), pos(), to_visit(), visited(), path_len() ) -> path_len().
+find_shortest_path_len( FavNum, FinishPos, ToVisit, Visited, MaxPathLen ) ->
+    case queue:out( ToVisit ) of
+        { empty, _ } -> sets:size( Visited );
+        { { value, { CurrentPos, CurrentPathLen } }, ToVisitWithoutCurrent } ->
+            FinishReached = FinishPos == CurrentPos,
+            MaxPathReached = CurrentPathLen == MaxPathLen,
+            AlreadyVisited = sets:is_element( CurrentPos, Visited ),
+
+            if FinishReached -> CurrentPathLen;
+               MaxPathReached orelse AlreadyVisited -> find_shortest_path_len( FavNum, FinishPos, queue:drop( ToVisit ) , Visited, MaxPathLen );
+               true ->
+                    CurrentNeighbours = get_movable_neighbours( FavNum, CurrentPos ),
+                    NewToVisit = lists:foldl( fun( ToVisitPos, ToVisitAcc ) ->
+                                                      queue:in( { ToVisitPos, CurrentPathLen + 1 }, ToVisitAcc )
+                                              end,
+                                              ToVisitWithoutCurrent,
+                                              CurrentNeighbours ),
+                    NewVisited = sets:add_element( CurrentPos, Visited ),
+                    find_shortest_path_len( FavNum, FinishPos, NewToVisit, NewVisited, MaxPathLen )
+            end
     end.
+
+-spec solve( string(), pos(), integer() ) -> non_neg_integer().
+solve( Input, FinishPos, MaxSteps ) ->
+    FavNum = erlang:list_to_integer( Input ),
+    StartPos = { 1, 1 },
+    find_shortest_path_len( FavNum, FinishPos, queue:from_list( [ { StartPos, 0 } ] ), sets:new(), MaxSteps ).
+
+%%% PART 1
 
 -spec solve1( string(), integer() ) -> non_neg_integer().
 solve1( Input, FinishPos ) ->
-    FavNum = erlang:list_to_integer( Input ),
-    StartPos = { 1, 1 },
-    find_shortest_path_len( FavNum, FinishPos, queue:from_list( [ { StartPos, 0 } ] ), sets:new() ).
+    solve( Input, FinishPos, -1 ).
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
     solve1( Input, { 31, 39 } ).
+
+%%% PART 2
+
+-spec solve2( string(), path_len() ) -> non_neg_integer().
+solve2( Input, MaxSteps ) ->
+    solve( Input, { -1, -1 }, MaxSteps + 1 ).
+
+-spec solve2( string() ) -> non_neg_integer().
+solve2( Input ) ->
+    solve2( Input, 50 ).
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -69,5 +93,8 @@ solve1_test_() ->
       ?_assertEqual( 0, solve1( "10", { 1, 1 } ) ),
       ?_assertEqual( 1, solve1( "10", { 1, 2 } ) ),
       ?_assertEqual( 2, solve1( "10", { 2, 2 } ) ),
-      ?_assertEqual( 11, solve1( "10", { 7, 4 } ) )
+      ?_assertEqual( 11, solve1( "10", { 7, 4 } ) ),
+      ?_assertEqual( 1, solve2( "10", 0 ) ),
+      ?_assertEqual( 3, solve2( "10", 1 ) ),
+      ?_assertEqual( 5, solve2( "10", 2 ) )
     ].
