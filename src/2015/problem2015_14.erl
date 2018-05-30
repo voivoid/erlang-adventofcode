@@ -8,13 +8,15 @@
 
 %%% COMMON
 
+-record(deer, { speed, flytime, resttime }).
+
 -spec parse_deer( string() ) -> deer().
 parse_deer( Line ) ->
-    Digits = [ $  | lists:seq( $0, $9 ) ],
-    SpaceSeparatedNumbers = lists:filter( fun( C ) -> lists:member( C, Digits ) end, Line ),
+    Filter = [ $  | lists:seq( $0, $9 ) ],
+    SpaceSeparatedNumbers = lists:filter( fun( C ) -> lists:member( C, Filter ) end, Line ),
     NumberStrs = string:tokens( SpaceSeparatedNumbers, " " ),
     [ Speed, FlyTime, RestTime ] = lists:map( fun erlang:list_to_integer/1, NumberStrs ),
-    { Speed, FlyTime, RestTime }.
+    #deer{ speed = Speed, flytime = FlyTime, resttime = RestTime }.
 
 -spec parse_input( string() ) -> [ deer() ].
 parse_input( Input ) ->
@@ -22,7 +24,7 @@ parse_input( Input ) ->
     lists:map( fun parse_deer/1, Lines ).
 
 -spec calc_distance( deer(), time() ) -> dist().
-calc_distance( { Speed, FlyTime, RestTime }, TotalTime ) ->
+calc_distance( #deer{ speed = Speed, flytime = FlyTime, resttime = RestTime }, TotalTime ) ->
     Period = FlyTime + RestTime,
     PeriodsNum = TotalTime div Period,
     TimeLeft = TotalTime rem Period,
@@ -43,8 +45,25 @@ solve1( Input ) ->
 
 %%% PART 2
 
-solve2( _Input, _Time ) ->
-    0.
+-record(deer_state, { deer, flytime_left, resttime_left, score }).
+
+make_deer_state( #deer{ flytime = FlyTime, resttime = RestTime } = Deer ) ->
+    #deer_state{ deer = Deer, flytime_left = FlyTime, resttime_left = RestTime, score = 0 }.
+
+update_deer_state( DeerState ) ->
+    
+
+solve2( Input, Time ) ->
+    Deers = parse_input( Input ),
+    lists:foldl( fun( _, DeerStates ) ->
+                         lists:map( fun update_deer_state/1, DeerStates )
+                 end,
+                 [ make_deer_state(Deer) || Deer <- Deers ],
+                 lists:seq( 1, Time ) ).
+
+
+solve2( Input ) ->
+    solve2( Input, 2503 ).
 
 solve2( Input ) ->
     solve2( Input, 2503 ).
