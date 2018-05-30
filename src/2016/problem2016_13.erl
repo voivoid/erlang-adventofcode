@@ -8,9 +8,9 @@
 -type pos() :: { coord(), coord() }.
 -type visited() :: sets:set( pos() ).
 -type path_len() :: non_neg_integer().
--type to_visit() :: queue:queue( pos(), path_len() ).
+-type to_visit() :: queue:queue( { pos(), path_len() } ).
 
--spec coord_neighbours( coord() ) -> coord().
+-spec coord_neighbours( coord() ) -> [ coord() ].
 coord_neighbours( 0 ) -> [ 1 ];
 coord_neighbours( C ) -> [ C - 1, C + 1 ].
 
@@ -61,9 +61,9 @@ solve( Input, FinishPos, MaxSteps ) ->
 
 %%% PART 1
 
--spec solve1( string(), integer() ) -> non_neg_integer().
+-spec solve1( string(), pos() ) -> non_neg_integer().
 solve1( Input, FinishPos ) ->
-    solve( Input, FinishPos, -1 ).
+    solve( Input, FinishPos, 99999 ).
 
 -spec solve1( string() ) -> non_neg_integer().
 solve1( Input ) ->
@@ -73,7 +73,7 @@ solve1( Input ) ->
 
 -spec solve2( string(), path_len() ) -> non_neg_integer().
 solve2( Input, MaxSteps ) ->
-    solve( Input, { -1, -1 }, MaxSteps + 1 ).
+    solve( Input, { 99999, 99999 }, MaxSteps + 1 ).
 
 -spec solve2( string() ) -> non_neg_integer().
 solve2( Input ) ->
