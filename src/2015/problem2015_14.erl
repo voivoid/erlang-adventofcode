@@ -4,11 +4,12 @@
 -type speed() :: non_neg_integer().
 -type time() :: non_neg_integer().
 -type dist() :: non_neg_integer().
--type deer() :: { speed(), time(), time() }.
+-type score() :: non_neg_integer().
 
 %%% COMMON
 
--record(deer, { speed, flytime, resttime }).
+-record(deer, { speed = 0 :: speed(), flytime = 0 :: time(), resttime = 0 :: time() }).
+-type deer() :: #deer{}.
 
 -spec parse_deer( string() ) -> deer().
 parse_deer( Line ) ->
@@ -45,25 +46,40 @@ solve1( Input ) ->
 
 %%% PART 2
 
--record(deer_state, { deer, flytime_left, resttime_left, score }).
+-record(deer_state, { deer = undefined :: deer(), flytime_left = 0 :: time(), resttime_left = 0 :: time(), distance = 0 :: dist(), score = 0 ::score() }).
 
 make_deer_state( #deer{ flytime = FlyTime, resttime = RestTime } = Deer ) ->
-    #deer_state{ deer = Deer, flytime_left = FlyTime, resttime_left = RestTime, score = 0 }.
+    #deer_state{ deer = Deer, flytime_left = FlyTime, resttime_left = RestTime, distance = 0, score = 0 }.
 
-update_deer_state( DeerState ) ->
-    
+make_deer_states( Deers ) ->
+    [ make_deer_state( Deer ) || Deer <- Deers ].
+
+update_deer_distance( Deer = #deer_state{ deer = #deer{ speed = Speed }, flytime_left = FlyTimeLeft, distance = Distance } ) when FlyTimeLeft > 0  ->
+    Deer#deer_state{ flytime_left = FlyTimeLeft - 1, distance = Speed + Distance };
+update_deer_distance( Deer = #deer_state{ resttime_left = RestTimeLeft } = Deer ) when RestTimeLeft > 0 ->
+    Deer#deer_state{ resttime_left = RestTimeLeft - 1 };
+update_deer_distance( Deer = #deer_state{ deer = #deer{ flytime = FlyTime, resttime = RestTime }, resttime_left = 0 } ) ->
+    Deer#deer_state{ flytime_left = FlyTime, resttime_left = RestTime }.
+
+update_deer_score( DeerStates ) ->
+    MaxDistance = lists:max( [ Distance || #deer_state{ distance = Distance } <- DeerStates ] ),
+    lists:map( fun ( #deer_state{ distance = Distance, score = Score } = Deer ) when Distance == MaxDistance -> Deer#deer_state{ score = Score + 1 };
+                   ( Deer ) -> Deer
+               end,
+               DeerStates).
+
+update_deer_states( DeerStates ) ->
+    UpdatedDistanceDeerStates = lists:map( fun update_deer_distance/1, DeerStates ),
+    update_deer_score( UpdatedDistanceDeerStates ).
 
 solve2( Input, Time ) ->
     Deers = parse_input( Input ),
-    lists:foldl( fun( _, DeerStates ) ->
-                         lists:map( fun update_deer_state/1, DeerStates )
-                 end,
-                 [ make_deer_state(Deer) || Deer <- Deers ],
-                 lists:seq( 1, Time ) ).
-
-
-solve2( Input ) ->
-    solve2( Input, 2503 ).
+    DeersAfterRace = lists:foldl( fun( _, DeerStates ) ->
+                                          update_deer_states( DeerStates )
+                                  end,
+                                  make_deer_states( Deers ),
+                                  lists:seq( 1, Time ) ),
+    lists:max( [ Score || #deer_state{ score = Score } <- DeersAfterRace ] ).
 
 solve2( Input ) ->
     solve2( Input, 2503 ).
