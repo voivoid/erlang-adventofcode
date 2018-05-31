@@ -59,7 +59,7 @@ update_deer_distance( Deer = #deer_state{ deer = #deer{ speed = Speed }, flytime
 update_deer_distance( Deer = #deer_state{ resttime_left = RestTimeLeft } = Deer ) when RestTimeLeft > 0 ->
     Deer#deer_state{ resttime_left = RestTimeLeft - 1 };
 update_deer_distance( Deer = #deer_state{ deer = #deer{ flytime = FlyTime, resttime = RestTime }, resttime_left = 0 } ) ->
-    Deer#deer_state{ flytime_left = FlyTime, resttime_left = RestTime }.
+    update_deer_distance( Deer#deer_state{ flytime_left = FlyTime, resttime_left = RestTime } ).
 
 update_deer_score( DeerStates ) ->
     MaxDistance = lists:max( [ Distance || #deer_state{ distance = Distance } <- DeerStates ] ),
