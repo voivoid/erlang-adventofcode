@@ -11,9 +11,9 @@
 
 -spec parse_neighbour_mod( string() ) -> neighbour_mod().
 parse_neighbour_mod( Line ) ->
-    [ Name, _, Modifier, Points, _, _, _, _, _, _, Neighbour ] = string:tokens( Line, " ." ),
+    [ Name, _Would, GainLose, Points, _Happiness, _Units, _By, _Sitting, _Next, _To, Neighbour ] = string:tokens( Line, " ." ),
     PointsNum = erlang:list_to_integer( Points ),
-    PointsModifier = case Modifier of
+    PointsModifier = case GainLose of
         "gain" -> PointsNum;
         "lose" -> -PointsNum
     end,
