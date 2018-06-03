@@ -18,6 +18,10 @@ parse_property( "flavor" ) -> flavor;
 parse_property( "texture" ) -> texture;
 parse_property( "calories" ) -> calories.
 
+-spec get_property_value( property_type(), properties() ) -> property_value().
+get_property_value( Property, [ { Property, Value } | _ ] ) -> Value;
+get_property_value( Property, [ _ | XS ] ) -> get_property_value( Property, XS ).
+
 -spec parse_properties( [ string() ] ) -> properties().
 parse_properties( [] ) -> [];
 parse_properties( [ Name, Value | Rest ] ) ->
@@ -66,6 +70,13 @@ calc_recipe_score( Recipe ) ->
                          SummedProperties ),
     Score.
 
+calc_recipe_calories( Recipe ) ->
+    lists:foldl( fun( { { _, Properties }, Volume }, CaloriesAcc ) ->
+                         CaloriesAcc + ( get_property_value( calories, Properties ) * Volume )
+                 end,
+                 0,
+                 Recipe ).
+
 -spec find_max_score_recipe( [ recipe() ] ) -> non_neg_integer().
 find_max_score_recipe( Recipes ) ->
     lists:max( [ calc_recipe_score( Recipe ) || Recipe <- Recipes ] ).
@@ -81,7 +92,10 @@ solve1( Input ) ->
 %%% PART 2
 
 solve2( Input ) ->
-    0.
+    Components = parse_components( Input ),
+    Recipes = generate_recipes( Components, 100 ),
+    Calories500Recipes = lists:filter( fun( Recipe ) -> calc_recipe_calories( Recipe ) == 500 end, Recipes ),
+    find_max_score_recipe( Calories500Recipes ).
 
 %%% TESTS
 
