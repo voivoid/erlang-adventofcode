@@ -46,6 +46,10 @@ problem_15_2() -> utils:make_test( "2015_15", fun problem2015_15:solve2/1, 11171
 problem_16_1() -> utils:make_test( "2015_16", fun problem2015_16:solve1/1, 103 ).
 problem_16_2() -> utils:make_test( "2015_16", fun problem2015_16:solve2/1, 405 ).
 
+problem_17_1() -> utils:make_test( "2015_17", fun problem2015_17:solve1/1, 4372 ).
+problem_17_2() -> utils:make_test( "2015_17", fun problem2015_17:solve2/1, 4 ).
+
+
 problem2015_test_() ->
     { inparallel, [
                    problem_01_1(), problem_01_2(),
@@ -62,5 +66,6 @@ problem2015_test_() ->
                    problem_13_1(), problem_13_2(),
                    problem_14_1(), problem_14_2(),
                    problem_15_1(), problem_15_2(),
-                   problem_16_1(), problem_16_2()
+                   problem_16_1(), problem_16_2(),
+                   problem_17_1(), problem_17_2()
                   ] }.
