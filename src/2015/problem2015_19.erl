@@ -39,7 +39,7 @@ parse_input( Input ) ->
     { split_molecula( string:trim( Molecula ) ), parse_ReplacementsMap( ReplacementsMap ) }.
 
 find_replacement( Molecula, ReplacementsMap ) ->
-    maps:get( Molecula, ReplacementsMap, [ Molecula ] ).
+    maps:get( Molecula, ReplacementsMap, [] ).
 
 molecula_array_to_str( Array ) ->
       array:foldr( fun( _, Molecula, Acc ) ->
