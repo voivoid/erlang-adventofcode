@@ -45,7 +45,7 @@ find_replacements( Molecula, ReplacementsMap ) ->
 -spec replace_moleculas( [ molecula() ], replacements_map() ) -> [ molecula() ].
 replace_moleculas( Moleculas, ReplacementsMap ) ->
     IndexedMoleculas = lists:zip( Moleculas, lists:seq( 1, erlang:length( Moleculas ) ) ),
-    [ lists:append( listz:set_elem( ReplacedMolecula, I, Moleculas ) ) || { Molecula, I } <- IndexedMoleculas, ReplacedMolecula <- find_replacements( Molecula, ReplacementsMap ) ].
+    [ listz:set_elem( ReplacedMolecula, I, Moleculas ) || { Molecula, I } <- IndexedMoleculas, ReplacedMolecula <- find_replacements( Molecula, ReplacementsMap ) ].
 
 %%% PART 1
 
@@ -53,7 +53,7 @@ replace_moleculas( Moleculas, ReplacementsMap ) ->
 solve1( Input ) ->
     { Moleculas, ReplacementsMap } = parse_input( Input ),
     Replacements = replace_moleculas( Moleculas, ReplacementsMap ),
-    erlang:length( lists:usort( Replacements ) ).
+    erlang:length( lists:usort( [ lists:append( R ) || R <- Replacements ] ) ).
 
 %%% PART 2
 
@@ -63,14 +63,14 @@ transmutate_moleculas( Moleculas, ExpectedMolecula, ReplacementsMap, Step ) ->
     case lists:member( ExpectedMolecula, Moleculas ) of
         true -> Step;
         false ->
-            Replacements = replace_moleculas( Moleculas, ReplacementsMap ),
+            Replacements = [ ReplacedMolecula || Molecula <- Moleculas, ReplacedMolecula <- replace_moleculas( Molecula, ReplacementsMap ) ],
             transmutate_moleculas( Replacements, ExpectedMolecula, ReplacementsMap, Step + 1 )
     end.
 
 solve2( Input ) ->
     { Moleculas, ReplacementsMap } = parse_input( Input ),
-    ExpectedMolecula = lists:append( Moleculas ),
-    transmutate_moleculas( [ "e" ], ExpectedMolecula, ReplacementsMap, 0 ),
+    ExpectedMolecula = Moleculas,
+    transmutate_moleculas( [ [ "e" ] ], ExpectedMolecula, ReplacementsMap, 0 ),
     0.
 
 %%% TESTS
@@ -99,7 +99,7 @@ solve1_test_() ->
     [ ?_assertEqual( 4, solve1( test_input_1() ) ),
       ?_assertEqual( 7, solve1( test_input_2() ) ) ].
 
-%% solve2_test_() ->
-%%     [ ?_assertEqual( 3, solve2( test_input_1() ) )
-%% %      ?_assertEqual( 6, solve2( test_input_2() ) )
-%%     ].
+%solve2_test_() ->
+%    [ ?_assertEqual( 3, solve2( test_input_1() ) )
+%      ?_assertEqual( 6, solve2( test_input_2() ) )
+%    ].
