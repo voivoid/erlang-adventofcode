@@ -1,5 +1,5 @@
 -module(listz).
--export([index/2, shiftl/2, shiftr/2, find/2, iterate/3, foldl_stoppable/4, permutations/1, set_elem/3]).
+-export([index/2, shiftl/2, shiftr/2, find/2, iterate/3, foldl_stoppable/4, permutations/1, set_elem/3, insert/3, replace/3]).
 
 -spec index( T, [T] ) -> non_neg_integer() | not_found.
 index( X, List ) -> index_impl( X, List, 1 ).
@@ -57,3 +57,13 @@ permutations( L ) -> [ [ X | XS ]  || X <- L, XS <- permutations( L -- [ X ] ) ]
 set_elem( Val, 1, [ _ | XS ] ) -> [ Val | XS ];
 set_elem( Val, Idx, [ X | XS ] ) -> [ X | set_elem( Val, Idx - 1, XS ) ];
 set_elem( _, _, _ ) -> error( badarg ).
+
+-spec insert( [ T ], non_neg_integer(), [ T ] ) -> [ T ].
+insert( InsertedList, 0, List ) -> lists:append( InsertedList, List );
+insert( InsertedList, Idx, [ X | XS ] ) -> [ X | insert( InsertedList, Idx - 1, XS ) ];
+insert( _, _, _ ) -> error( badarg ).
+
+-spec replace( [ T ], non_neg_integer(), [ T ] ) -> [ T ].
+replace( ReplacementList, 1, [ _ | XS ] ) -> lists:append( ReplacementList, XS );
+replace( ReplacementList, Idx, [ X | XS ] ) -> [ X | replace( ReplacementList, Idx - 1, XS ) ];
+replace( _, _, _ ) -> error( badarg ).

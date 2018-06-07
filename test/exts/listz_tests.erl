@@ -50,3 +50,17 @@ set_elem_test_() ->
       ?_assertError( badarg, listz:set_elem( e, 0, [] ) ),
       ?_assertError( badarg, listz:set_elem( e, 1, [] ) )
     ].
+
+insert_test_() ->
+    [ ?_assertEqual( [ x, y, z ], listz:insert( [], 0, [ x, y, z ] ) ),
+      ?_assertEqual( [ x, y, z ], listz:insert( [], 3, [ x, y, z ] ) ),
+      ?_assertEqual( [ a, x, y, z, b ], listz:insert( [ x, y, z ], 1, [ a, b ] ) ),
+      ?_assertEqual( [ a, b, c, x, y, z ], listz:insert( [ x, y, z ], 3, [ a, b, c ] ) )
+    ].
+
+replace_test_() ->
+    [ ?_assertEqual( [ y, z ], listz:replace( [], 1, [ x, y, z ] ) ),
+      ?_assertEqual( [ x, y ], listz:replace( [], 3, [ x, y, z ] ) ),
+      ?_assertEqual( [ x, y, z, b ], listz:replace( [ x, y, z ], 1, [ a, b ] ) ),
+      ?_assertEqual( [ a, b, x, y, z ], listz:replace( [ x, y, z ], 3, [ a, b, c ] ) )
+    ].
