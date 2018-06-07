@@ -42,3 +42,11 @@ permutations_test_() ->
       ?_assertEqual( [ [ 1, 2 ], [ 2, 1 ] ], listz:permutations( [ 1, 2 ] ) ),
       ?_assertEqual( [ [ 1, 2, 3 ], [ 1, 3, 2 ], [ 2, 1, 3 ], [ 2, 3, 1 ], [ 3, 1, 2 ], [ 3, 2, 1 ] ], listz:permutations( [ 1, 2, 3 ] ) )
     ].
+
+set_elem_test_() ->
+    [ ?_assertEqual( [ y ], listz:set_elem( y, 1, [ x ] ) ),
+      ?_assertEqual( [ x, a, z ], listz:set_elem( a, 2, [ x, y, z ] ) ),
+      ?_assertEqual( [ x, y, a ], listz:set_elem( a, 3, [ x, y, z ] ) ),
+      ?_assertError( badarg, listz:set_elem( e, 0, [] ) ),
+      ?_assertError( badarg, listz:set_elem( e, 1, [] ) )
+    ].

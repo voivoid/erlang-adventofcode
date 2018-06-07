@@ -1,5 +1,5 @@
 -module(problem2015_19).
--export([solve1/1]).
+-export([solve1/1, solve2/1]).
 -compile([export_all, nowarn_export_all]).
 
 -type molecula() :: string().
@@ -38,21 +38,14 @@ parse_input( Input ) ->
     { ReplacementsMap, Molecula } = lists:split( erlang:length( Lines ) - 1, Lines ),
     { split_molecula( string:trim( Molecula ) ), parse_ReplacementsMap( ReplacementsMap ) }.
 
-find_replacement( Molecula, ReplacementsMap ) ->
+-spec find_replacements( molecula(), replacements_map() ) -> [ molecula() ].
+find_replacements( Molecula, ReplacementsMap ) ->
     maps:get( Molecula, ReplacementsMap, [] ).
 
-molecula_array_to_str( Array ) ->
-      array:foldr( fun( _, Molecula, Acc ) ->
-                           Molecula ++ Acc
-                   end,
-                   "",
-                   Array ).
-
-
+-spec replace_moleculas( [ molecula() ], replacements_map() ) -> [ molecula() ].
 replace_moleculas( Moleculas, ReplacementsMap ) ->
-    MoleculasArray = array:from_list( Moleculas ),
-    IndexedMoleculas = lists:zip( Moleculas, lists:seq( 0, array:size( MoleculasArray ) - 1 ) ),
-    [ molecula_array_to_str( array:set( I, ReplacedMolecula, MoleculasArray ) ) || { Molecula, I } <- IndexedMoleculas, ReplacedMolecula <- find_replacement( Molecula, ReplacementsMap ) ].
+    IndexedMoleculas = lists:zip( Moleculas, lists:seq( 1, erlang:length( Moleculas ) ) ),
+    [ lists:append( listz:set_elem( ReplacedMolecula, I, Moleculas ) ) || { Molecula, I } <- IndexedMoleculas, ReplacedMolecula <- find_replacements( Molecula, ReplacementsMap ) ].
 
 %%% PART 1
 
@@ -64,19 +57,39 @@ solve1( Input ) ->
 
 %%% PART 2
 
+transmutate_moleculas( [], _, _, _ ) -> error( fatal );
+transmutate_moleculas( Moleculas, ExpectedMolecula, ReplacementsMap, Step ) ->
+    io:format(user, "~p ~p~n", [ Moleculas, Step ] ),
+    case lists:member( ExpectedMolecula, Moleculas ) of
+        true -> Step;
+        false ->
+            Replacements = replace_moleculas( Moleculas, ReplacementsMap ),
+            transmutate_moleculas( Replacements, ExpectedMolecula, ReplacementsMap, Step + 1 )
+    end.
+
+solve2( Input ) ->
+    { Moleculas, ReplacementsMap } = parse_input( Input ),
+    ExpectedMolecula = lists:append( Moleculas ),
+    transmutate_moleculas( [ "e" ], ExpectedMolecula, ReplacementsMap, 0 ),
+    0.
+
 %%% TESTS
 
 -include_lib("eunit/include/eunit.hrl").
 
 test_input_1() ->
-    "H => HO
+    "e => H
+     e => O
+     H => HO
      H => OH
      O => HH
 
      HOH".
 
 test_input_2() ->
-    "H => HO
+    "e => H
+     e => O
+     H => HO
      H => OH
      O => HH
 
@@ -85,3 +98,8 @@ test_input_2() ->
 solve1_test_() ->
     [ ?_assertEqual( 4, solve1( test_input_1() ) ),
       ?_assertEqual( 7, solve1( test_input_2() ) ) ].
+
+%% solve2_test_() ->
+%%     [ ?_assertEqual( 3, solve2( test_input_1() ) )
+%% %      ?_assertEqual( 6, solve2( test_input_2() ) )
+%%     ].
