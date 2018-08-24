@@ -13,11 +13,11 @@ transform( [ Digit | _ ] = Digits ) ->
 -spec solve( string(), non_neg_integer() ) -> non_neg_integer().
 solve( Input, TransformNum ) ->
     erlang:length( lists:foldl( fun( _, Num ) ->
-                         transform( Num )
-                 end,
-                 Input,
-                 lists:seq( 1, TransformNum )
-               ) ).
+                                        transform( Num )
+                                end,
+                                Input,
+                                lists:seq( 1, TransformNum )
+                              ) ).
 
 %%% PART 1
 
