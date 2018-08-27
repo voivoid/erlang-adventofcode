@@ -6,8 +6,8 @@
 %%% COMMON
 
 -spec next_letter( char() ) -> { char(), boolean() }.
-next_letter( $z ) -> { $a, true };
-next_letter( L ) -> { L + 1, false }.
+next_letter( $z ) -> $a;
+next_letter( L ) -> L + 1.
 
 -spec has_incrementing_letters( password() ) -> boolean().
 has_incrementing_letters( [ C, B, A | _ ] ) when B == A + 1, C == B + 1 ->
@@ -48,8 +48,9 @@ is_good_password( Password ) ->
 get_next_password( [] ) -> "a";
 get_next_password( [ X | XS ] ) ->
     case next_letter( X ) of
-        { NextLetter, false } -> [ NextLetter | XS ];
-        { NextLetter, true } -> [ NextLetter | get_next_password( XS ) ]
+        $a -> [ $a | get_next_password( XS ) ];
+        NextLetter -> [ NextLetter | XS ]
+
     end.
 
 find_good_password( Password ) ->
